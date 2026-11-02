@@ -1,0 +1,64 @@
+<svg width="400" height="300" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Desk -->
+  <rect x="50" y="200" width="300" height="15" fill="#8B7355" rx="5"/>
+  <rect x="60" y="215" width="10" height="80" fill="#6B5345"/>
+  <rect x="330" y="215" width="10" height="80" fill="#6B5345"/>
+  
+  <!-- Monitor -->
+  <rect x="140" y="100" width="120" height="90" fill="#2D3748" rx="5"/>
+  <rect x="150" y="110" width="100" height="70" fill="#4299E1"/>
+  
+  <!-- Monitor Screen Content -->
+  <rect x="160" y="120" width="30" height="5" fill="#fff" opacity="0.8"/>
+  <rect x="160" y="130" width="40" height="5" fill="#fff" opacity="0.8"/>
+  <rect x="160" y="140" width="35" height="5" fill="#fff" opacity="0.8"/>
+  <circle cx="175" cy="160" r="8" fill="#48BB78"/>
+  
+  <!-- Monitor Stand -->
+  <rect x="185" y="190" width="30" height="10" fill="#2D3748"/>
+  <rect x="190" y="195" width="20" height="5" fill="#718096"/>
+  
+  <!-- Person -->
+  <!-- Head -->
+  <circle cx="250" cy="160" r="20" fill="#FBBF24"/>
+  
+  <!-- Body -->
+  <path d="M 250 180 L 250 230" stroke="#4299E1" stroke-width="20" stroke-linecap="round"/>
+  
+  <!-- Arms -->
+  <path d="M 240 190 L 200 210" stroke="#FBBF24" stroke-width="8" stroke-linecap="round"/>
+  <path d="M 260 190 L 280 200" stroke="#FBBF24" stroke-width="8" stroke-linecap="round"/>
+  
+  <!-- Hand on mouse -->
+  <circle cx="285" cy="205" r="6" fill="#FBBF24"/>
+  
+  <!-- Legs -->
+  <path d="M 245 230 L 240 260" stroke="#2C5282" stroke-width="10" stroke-linecap="round"/>
+  <path d="M 255 230 L 260 260" stroke="#2C5282" stroke-width="10" stroke-linecap="round"/>
+  
+  <!-- Documents on desk -->
+  <rect x="80" y="170" width="40" height="30" fill="#fff" stroke="#CBD5E0" stroke-width="2" rx="2"/>
+  <rect x="85" y="175" width="30" height="3" fill="#CBD5E0"/>
+  <rect x="85" y="180" width="25" height="3" fill="#CBD5E0"/>
+  <rect x="85" y="185" width="28" height="3" fill="#CBD5E0"/>
+  
+  <!-- Coffee cup -->
+  <ellipse cx="310" cy="195" rx="8" ry="3" fill="#8B4513"/>
+  <rect x="302" y="180" width="16" height="15" fill="#A0522D" rx="2"/>
+  <path d="M 318 185 Q 325 185 325 190 Q 325 195 318 195" stroke="#8B4513" stroke-width="2" fill="none"/>
+  
+  <!-- Plant -->
+  <ellipse cx="90" cy="150" rx="12" ry="5" fill="#8B7355"/>
+  <path d="M 85 150 Q 85 130 80 120 Q 78 115 82 115" stroke="#48BB78" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M 90 150 Q 90 125 90 115 Q 90 110 94 110" stroke="#48BB78" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M 95 150 Q 98 130 102 120 Q 104 115 100 113" stroke="#48BB78" stroke-width="3" fill="none" stroke-linecap="round"/>
+  
+  <!-- Floating icons -->
+  <!-- Dollar sign -->
+  <circle cx="320" cy="120" r="15" fill="#10B981" opacity="0.2"/>
+  <text x="320" y="128" font-size="20" fill="#10B981" text-anchor="middle" font-weight="bold">$</text>
+  
+  <!-- Chart -->
+  <circle cx="110" cy="100" r="15" fill="#3B82F6" opacity="0.2"/>
+  <path d="M 105 105 L 108 102 L 112 108 L 115 100" stroke="#3B82F6" stroke-width="2" fill="none" stroke-linecap="round"/>
+</svg>

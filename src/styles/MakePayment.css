@@ -1,0 +1,1132 @@
+/* Make Payment Modern Redesign CSS */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+.make-payment-container {
+  padding: 1.75rem 2rem;
+  max-width: 1320px;
+  margin: 0 auto;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: #0f172a;
+}
+
+/* Breadcrumb styling */
+.mp-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: #64748b;
+  margin-bottom: 1.5rem;
+}
+
+.mp-breadcrumb a {
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.mp-breadcrumb a:hover {
+  color: #1d4ed8;
+  text-decoration: underline;
+}
+
+.mp-breadcrumb-separator {
+  color: #94a3b8;
+  font-size: 0.8rem;
+}
+
+.mp-breadcrumb-current {
+  color: #1e293b;
+  font-weight: 700;
+}
+
+/* Premium Top Header Banner */
+.mp-header-card {
+  background: linear-gradient(135deg, #0b1329 0%, #1e293b 45%, #1d4ed8 100%);
+  color: #ffffff;
+  border-radius: 20px;
+  padding: 2.25rem 2.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 20px 30px -10px rgba(15, 23, 42, 0.25);
+  position: relative;
+  overflow: hidden;
+}
+
+.mp-header-card::before {
+  content: "";
+  position: absolute;
+  top: -40%;
+  right: -10%;
+  width: 450px;
+  height: 450px;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.25) 0%, rgba(255, 255, 255, 0) 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.mp-header-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.75rem;
+}
+
+.mp-header-title-area h2 {
+  font-size: 1.95rem;
+  font-weight: 800;
+  margin: 0 0 0.5rem 0;
+  letter-spacing: -0.025em;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.mp-header-title-area p {
+  margin: 0;
+  font-size: 0.975rem;
+  color: rgba(241, 245, 249, 0.9);
+  max-width: 650px;
+  line-height: 1.6;
+}
+
+.mp-status-badge-container {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.mp-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.65rem 1.4rem;
+  border-radius: 9999px;
+  font-weight: 800;
+  font-size: 0.875rem;
+  letter-spacing: 0.03em;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  text-transform: uppercase;
+}
+
+.mp-status-badge.efiling {
+  background: rgba(16, 185, 129, 0.22);
+  color: #34d399;
+  border: 1.5px solid rgba(52, 211, 153, 0.5);
+  backdrop-filter: blur(12px);
+}
+
+.mp-status-badge.paper {
+  background: rgba(245, 158, 11, 0.22);
+  color: #fbbf24;
+  border: 1.5px solid rgba(251, 191, 36, 0.5);
+  backdrop-filter: blur(12px);
+}
+
+.mp-status-badge.disabled {
+  background: rgba(148, 163, 184, 0.2);
+  color: #cbd5e1;
+  border: 1.5px solid rgba(203, 213, 225, 0.35);
+}
+
+/* Modern Floating Stepper */
+.mp-stepper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 1.25rem 2.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  border: 1px solid #e2e8f0;
+}
+
+.mp-step {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  color: #64748b;
+  font-weight: 600;
+  font-size: 0.925rem;
+}
+
+.mp-step.active {
+  color: #2563eb;
+  font-weight: 800;
+}
+
+.mp-step.completed {
+  color: #10b981;
+}
+
+.mp-step-number {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #f1f5f9;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 0.925rem;
+  transition: all 0.25s ease;
+}
+
+.mp-step.active .mp-step-number {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  color: #ffffff;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.2);
+}
+
+.mp-step.completed .mp-step-number {
+  background: #10b981;
+  color: #ffffff;
+}
+
+.mp-step-divider {
+  flex: 1;
+  height: 2px;
+  background: #e2e8f0;
+  margin: 0 2rem;
+  border-radius: 2px;
+}
+
+/* Grid Layout for Payment Section */
+.mp-grid {
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: 2rem;
+  align-items: start;
+}
+
+@media (max-width: 1024px) {
+  .mp-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Cards Design */
+.mp-card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 2rem;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.04), 0 8px 10px -6px rgba(0, 0, 0, 0.02);
+  margin-bottom: 2rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.mp-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #2563eb 0%, #3b82f6 50%, #60a5fa 100%);
+}
+
+.mp-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.mp-card-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #0f172a;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0;
+  letter-spacing: -0.015em;
+}
+
+.mp-card-title-icon {
+  color: #2563eb;
+  background: #eff6ff;
+  padding: 0.4rem;
+  border-radius: 10px;
+  box-sizing: content-box;
+}
+
+/* Filing Info Notice Banner Box */
+.mp-filing-info-box {
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 1.75rem;
+  display: flex;
+  gap: 1.25rem;
+  align-items: flex-start;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+}
+
+.mp-filing-info-box.efiling {
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+  border: 1.5px solid #a7f3d0;
+  color: #065f46;
+}
+
+.mp-filing-info-box.paper {
+  background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+  border: 1.5px solid #fde68a;
+  color: #92400e;
+}
+
+.mp-filing-info-icon-badge {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.mp-filing-info-box.efiling .mp-filing-info-icon-badge {
+  background: #10b981;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.mp-filing-info-box.paper .mp-filing-info-icon-badge {
+  background: #f59e0b;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+}
+
+.mp-filing-info-text h4 {
+  margin: 0 0 0.4rem 0;
+  font-weight: 800;
+  font-size: 1.05rem;
+  letter-spacing: -0.01em;
+}
+
+.mp-filing-info-text p {
+  margin: 0 0 0.85rem 0;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  opacity: 0.95;
+}
+
+.mp-feature-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.mp-feature-pill {
+  font-size: 0.775rem;
+  font-weight: 700;
+  padding: 0.3rem 0.75rem;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* Payment Method Tabs Grid */
+.mp-payment-methods {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+@media (max-width: 640px) {
+  .mp-payment-methods {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.mp-method-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 1.15rem 0.75rem;
+  border-radius: 16px;
+  border: 2px solid #e2e8f0;
+  background: #ffffff;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  font-weight: 700;
+  font-size: 0.875rem;
+  color: #475569;
+  position: relative;
+}
+
+.mp-method-tab:hover {
+  border-color: #93c5fd;
+  background: #f8fafc;
+  transform: translateY(-2px);
+}
+
+.mp-method-tab.active {
+  border-color: #2563eb;
+  background: linear-gradient(180deg, #eff6ff 0%, #dbeafe 100%);
+  color: #1e40af;
+  box-shadow: 0 8px 16px -4px rgba(37, 99, 235, 0.18);
+}
+
+.mp-method-tab.active::after {
+  content: "✓";
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  width: 18px;
+  height: 18px;
+  background: #2563eb;
+  color: #ffffff;
+  border-radius: 50%;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+}
+
+.mp-method-icon {
+  width: 26px;
+  height: 26px;
+}
+
+/* Payment Form Styling */
+.mp-form-group {
+  margin-bottom: 1.5rem;
+}
+
+.mp-form-group label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 0.6rem;
+}
+
+.mp-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.mp-input-icon {
+  position: absolute;
+  left: 1.15rem;
+  color: #94a3b8;
+  pointer-events: none;
+  transition: color 0.2s ease;
+}
+
+.mp-input {
+  width: 100%;
+  padding: 0.85rem 1.15rem;
+  padding-left: 3rem;
+  font-size: 0.975rem;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #0f172a;
+  outline: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+.mp-input.no-icon {
+  padding-left: 1.15rem;
+}
+
+.mp-input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+}
+
+.mp-input:focus + .mp-input-icon,
+.mp-input-wrapper:focus-within .mp-input-icon {
+  color: #2563eb;
+}
+
+.mp-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+/* Card Brand Badges */
+.mp-card-brands {
+  position: absolute;
+  right: 1rem;
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+}
+
+.mp-brand-pill {
+  font-size: 0.675rem;
+  font-weight: 800;
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+  letter-spacing: 0.03em;
+}
+
+.mp-brand-pill.visa {
+  background: #1a1f71;
+  color: #ffffff;
+  border-color: #1a1f71;
+}
+
+.mp-brand-pill.mc {
+  background: #eb001b;
+  color: #ffffff;
+  border-color: #eb001b;
+}
+
+.mp-brand-pill.amex {
+  background: #006fcf;
+  color: #ffffff;
+  border-color: #006fcf;
+}
+
+/* Right Column Order Summary Sticky Card */
+.mp-summary-card {
+  position: sticky;
+  top: 2rem;
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 2rem;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.08), 0 8px 12px -6px rgba(0, 0, 0, 0.03);
+  position: relative;
+  overflow: hidden;
+}
+
+.mp-summary-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background: linear-gradient(90deg, #10b981 0%, #2563eb 100%);
+}
+
+.mp-summary-title {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 1.5rem 0;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #f1f5f9;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mp-summary-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.95rem;
+  color: #475569;
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+
+.mp-summary-line.discount {
+  color: #16a34a;
+  font-weight: 700;
+  background: #f0fdf4;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+}
+
+.mp-promo-section {
+  margin: 1.5rem 0;
+  padding: 1.25rem 0;
+  border-top: 1px dashed #cbd5e1;
+  border-bottom: 1px dashed #cbd5e1;
+}
+
+.mp-promo-input-group {
+  display: flex;
+  gap: 0.6rem;
+}
+
+.mp-promo-input {
+  flex: 1;
+  padding: 0.65rem 1rem;
+  font-size: 0.9rem;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 10px;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  outline: none;
+}
+
+.mp-promo-input:focus {
+  border-color: #2563eb;
+}
+
+.mp-promo-btn {
+  padding: 0.65rem 1.25rem;
+  background: #0f172a;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.mp-promo-btn:hover {
+  background: #1e293b;
+}
+
+.mp-promo-message {
+  font-size: 0.8rem;
+  margin-top: 0.5rem;
+  font-weight: 600;
+}
+
+.mp-promo-message.success {
+  color: #16a34a;
+}
+
+.mp-promo-message.error {
+  color: #dc2626;
+}
+
+.mp-total-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-top: 1.5rem;
+  margin-bottom: 1.75rem;
+  padding-top: 0.5rem;
+}
+
+.mp-total-label {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.mp-total-amount {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #2563eb;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.mp-pay-button {
+  width: 100%;
+  padding: 1.1rem;
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: 14px;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.35);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mp-pay-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 25px rgba(37, 99, 235, 0.45);
+  background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+}
+
+.mp-pay-button:disabled {
+  opacity: 0.75;
+  cursor: not-allowed;
+}
+
+.mp-guarantee-box {
+  margin-top: 1.75rem;
+  padding: 1.15rem;
+  background: #f8fafc;
+  border-radius: 14px;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  font-size: 0.825rem;
+  color: #475569;
+  line-height: 1.45;
+}
+
+.mp-guarantee-icon {
+  color: #10b981;
+  flex-shrink: 0;
+}
+
+/* Success Confirmation State */
+.mp-success-card {
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 3.5rem 2.5rem;
+  text-align: center;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+  max-width: 680px;
+  margin: 2.5rem auto;
+}
+
+.mp-success-icon-wrapper {
+  width: 90px;
+  height: 90px;
+  background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+  color: #15803d;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.75rem auto;
+  box-shadow: 0 0 0 10px rgba(220, 252, 231, 0.6);
+}
+
+.mp-success-title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 0.6rem;
+  letter-spacing: -0.02em;
+}
+
+.mp-success-subtitle {
+  color: #64748b;
+  font-size: 1.05rem;
+  margin-bottom: 2.25rem;
+  line-height: 1.5;
+}
+
+.mp-receipt-box {
+  background: #f8fafc;
+  border-radius: 16px;
+  padding: 1.75rem;
+  border: 1px solid #e2e8f0;
+  text-align: left;
+  margin-bottom: 2.25rem;
+}
+
+.mp-receipt-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.95rem;
+  padding: 0.65rem 0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.mp-receipt-row:last-child {
+  border-bottom: none;
+}
+
+.mp-receipt-label {
+  color: #64748b;
+  font-weight: 500;
+}
+
+.mp-receipt-value {
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.mp-actions-group {
+  display: flex;
+  justify-content: center;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.mp-btn-primary {
+  padding: 0.85rem 2rem;
+  background: #2563eb;
+  color: #ffffff;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.25);
+  transition: all 0.2s ease;
+}
+
+.mp-btn-primary:hover {
+  background: #1d4ed8;
+  transform: translateY(-1px);
+}
+
+.mp-btn-secondary {
+  padding: 0.85rem 2rem;
+  background: #f1f5f9;
+  color: #334155;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  text-decoration: none;
+  border: 1.5px solid #cbd5e1;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  transition: all 0.2s ease;
+}
+
+.mp-btn-secondary:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+/* Ineligible / Disabled Status View */
+.mp-not-required-card {
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 3.5rem 2.5rem;
+  text-align: center;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  max-width: 800px;
+  margin: 2rem auto;
+}
+
+.mp-not-required-icon {
+  width: 80px;
+  height: 80px;
+  background: #eff6ff;
+  color: #2563eb;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.75rem auto;
+  box-shadow: 0 0 0 8px rgba(239, 246, 255, 0.8);
+}
+
+.mp-not-required-title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 0.85rem;
+  letter-spacing: -0.02em;
+}
+
+.mp-not-required-desc {
+  color: #64748b;
+  font-size: 1.025rem;
+  line-height: 1.65;
+  max-width: 650px;
+  margin: 0 auto 2rem auto;
+}
+
+.mp-current-status-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.75rem 1.5rem;
+  background: #f8fafc;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 9999px;
+  font-weight: 700;
+  color: #334155;
+  margin-bottom: 2.25rem;
+  font-size: 0.95rem;
+}
+
+.mp-demo-toggle-banner {
+  background: #f8fafc;
+  border: 2px dashed #cbd5e1;
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-top: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.mp-demo-toggle-title {
+  font-size: 0.875rem;
+  font-weight: 800;
+  color: #475569;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.mp-demo-buttons {
+  display: flex;
+  gap: 0.85rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.mp-demo-btn {
+  padding: 0.6rem 1.2rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  border-radius: 10px;
+  border: 1.5px solid #cbd5e1;
+  background: #ffffff;
+  color: #1e293b;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.mp-demo-btn:hover {
+  background: #2563eb;
+  color: #ffffff;
+  border-color: #2563eb;
+}
+
+.mp-demo-btn.active {
+  background: #0f172a;
+  color: #ffffff;
+  border-color: #0f172a;
+}
+
+/* Bank details info block */
+.mp-bank-info-box {
+  background: #f8fafc;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 1.5rem;
+  margin-top: 1rem;
+}
+
+.mp-bank-detail-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.925rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.mp-bank-detail-row:last-child {
+  border-bottom: none;
+}
+
+/* ==========================================================================
+   PAYPAL SMART CHECKOUT STEP-BY-STEP STYLES
+   ========================================================================== */
+.mp-paypal-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  animation: fadeIn 0.3s ease;
+}
+
+/* Step-by-step banner */
+.mp-paypal-steps-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 0.9rem 1.25rem;
+  gap: 0.5rem;
+}
+
+.mp-paypal-step-item {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.mp-paypal-step-circle {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #e2e8f0;
+  color: #475569;
+  font-size: 0.775rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mp-paypal-step-item.active .mp-paypal-step-circle {
+  background: #0070ba;
+  color: #ffffff;
+}
+
+.mp-paypal-step-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.mp-paypal-step-title {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #1e293b;
+  line-height: 1.2;
+}
+
+.mp-paypal-step-sub {
+  font-size: 0.7rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.mp-paypal-step-arrow {
+  color: #94a3b8;
+  flex-shrink: 0;
+}
+
+@media (max-width: 640px) {
+  .mp-paypal-steps-banner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+  .mp-paypal-step-arrow {
+    display: none;
+  }
+}
+
+/* Pay Later Installment Banner */
+.mp-paypal-installment-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  background: linear-gradient(135deg, #f0f7ff 0%, #e0f2fe 100%);
+  border: 1px solid #bae6fd;
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+  font-size: 0.85rem;
+  color: #0369a1;
+}
+
+.mp-installment-icon {
+  color: #0284c7;
+  flex-shrink: 0;
+}
+
+/* PayPal Box Card */
+.mp-paypal-buttons-box {
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 14px rgba(0, 48, 135, 0.04);
+}
+
+.mp-paypal-box-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.85rem;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.mp-paypal-box-title {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.mp-paypal-brand-badge {
+  font-size: 1.2rem;
+  letter-spacing: -0.03em;
+}
+
+.mp-paypal-box-heading {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.mp-paypal-secure-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #059669;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  padding: 0.25rem 0.6rem;
+  border-radius: 9999px;
+}
+
+.mp-paypal-buttons-wrapper {
+  min-height: 120px;
+}
+
+.mp-paypal-guarantee-footer {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  background: #fafaf9;
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  margin-top: 1.25rem;
+  font-size: 0.8rem;
+  color: #57534e;
+  border: 1px solid #e7e5e4;
+}
+
+.mp-shield-icon {
+  color: #0070ba;
+  flex-shrink: 0;
+}
+
+/* Right side paypal guide card */
+.mp-paypal-guide-btn-box {
+  background: #f0f9ff;
+  border: 1.5px dashed #0284c7;
+  border-radius: 14px;
+  padding: 1.15rem;
+  text-align: center;
+}
+
+.mp-paypal-guide-note {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #0369a1;
+  line-height: 1.5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.mp-guide-icon {
+  color: #0284c7;
+}
+
