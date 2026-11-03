@@ -7,7 +7,12 @@ import {
   Upload,
   User,
   Calendar,
-  AlertCircle
+  AlertCircle,
+  CheckCircle2,
+  Clock,
+  Edit3,
+  Save,
+  X as XIcon
 } from "lucide-react";
 import { getStoredUser, isEmailVerified } from "../utils/user";
 import { URLS } from "../url";
@@ -17,6 +22,9 @@ import WelcomeModal from "../Components/WelcomeModal";
 import "../styles/Dashboard.css";
 import "../styles/ClientDashboard.css";
 
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+
 const Dashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [user, setUser] = useState(null);
@@ -25,6 +33,10 @@ const Dashboard = () => {
   const [showQueryModal, setShowQueryModal] = useState(false);
   const [showWelcomeModal, setShowWelcomeModal] = useState(false);
   const [welcomeUserData, setWelcomeUserData] = useState(null);
+  const [taxpayerData, setTaxpayerData] = useState(null);
+  const [documentsData, setDocumentsData] = useState(null);
+  const [isEditingGuidance, setIsEditingGuidance] = useState(false);
+  const [guidanceContent, setGuidanceContent] = useState("");
 
   const navigate = useNavigate();
 
@@ -88,6 +100,56 @@ const Dashboard = () => {
     }
   };
 
+  // Fetch taxpayer data for status card
+  const fetchTaxpayerData = async () => {
+    try {
+      const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+      if (!token) return;
+
+      const res = await fetch(URLS.GetTaxPayer, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success && data.data) {
+          setTaxpayerData(data.data);
+        }
+      }
+    } catch (err) {
+      console.error("Error fetching taxpayer data:", err);
+    }
+  };
+
+  // Fetch documents data for status card
+  const fetchDocumentsData = async () => {
+    try {
+      const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+      if (!token) return;
+
+      const res = await fetch(URLS.GetDocuments, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success && data.data) {
+          setDocumentsData(data.data);
+        }
+      }
+    } catch (err) {
+      console.error("Error fetching documents data:", err);
+    }
+  };
+
   useEffect(() => {
     const loadUser = () => {
       const stored = getStoredUser();
@@ -101,6 +163,8 @@ const Dashboard = () => {
     loadUser();
     fetchDashboardData();
     fetchUserProfile();
+    fetchTaxpayerData();
+    fetchDocumentsData();
 
     const handleUserUpdated = () => loadUser();
     window.addEventListener("user-updated", handleUserUpdated);
@@ -231,9 +295,124 @@ const Dashboard = () => {
 
   const emailVerified = isEmailVerified(user);
 
+  // Calculate Tax Year 2026 Status items
+  const calculateTaxYearStatus = () => {
+    const statuses = [];
+
+    // 1. Client Info - Check if taxpayer data exists
+    const clientInfoComplete = Boolean(
+      taxpayerData &&
+      taxpayerData.first_name &&
+      taxpayerData.last_name &&
+      taxpayerData.email
+    );
+    statuses.push({
+      label: "Client Info",
+      completed: clientInfoComplete,
+      icon: clientInfoComplete ? CheckCircle2 : Clock,
+      statusText: clientInfoComplete ? "Completed" : "Pending"
+    });
+
+    // 2. Documents - Check if documents uploaded
+    const documentsComplete = Boolean(
+      documentsData &&
+      ((Array.isArray(documentsData) && documentsData.length > 0) ||
+       (documentsData.documents && Array.isArray(documentsData.documents) && documentsData.documents.length > 0) ||
+       (documentsData.count && documentsData.count > 0) ||
+       docCount > 0)
+    );
+    statuses.push({
+      label: "Documents",
+      completed: documentsComplete,
+      icon: documentsComplete ? CheckCircle2 : Clock,
+      statusText: documentsComplete ? "Completed" : "Pending"
+    });
+
+    // 3. Tax Preparation - Check payment status
+    const paymentStatus = dashboardData?.payment_status || dashboardData?.fee_status;
+    const taxPrepComplete = paymentStatus === 1 || paymentStatus === 2;
+    statuses.push({
+      label: "Tax Preparation",
+      completed: taxPrepComplete,
+      icon: taxPrepComplete ? CheckCircle2 : Clock,
+      statusText: taxPrepComplete ? "Completed" : "Pending"
+    });
+
+    // 4. Client Review - Check review/efiling status
+    const reviewStatus = dashboardData?.review_status;
+    const efilingStatus = dashboardData?.efiling_status;
+    const clientReviewComplete = 
+      reviewStatus === "in_progress" ||
+      efilingStatus === "pending-1" ||
+      efilingStatus === "pending-2" ||
+      efilingStatus === "pending_1" ||
+      efilingStatus === "pending_2";
+    statuses.push({
+      label: "Client Review",
+      completed: clientReviewComplete,
+      icon: clientReviewComplete ? CheckCircle2 : Clock,
+      statusText: clientReviewComplete ? "Completed" : "Pending"
+    });
+
+    // 5. Return Filed - Check e-filing status
+    const returnFiledComplete = 
+      efilingStatus === "filed" ||
+      efilingStatus === "submitted" ||
+      dashboardData?.filing_status === "filed";
+    statuses.push({
+      label: "Return Filed",
+      completed: returnFiledComplete,
+      icon: returnFiledComplete ? CheckCircle2 : Clock,
+      statusText: returnFiledComplete ? "Completed" : "Pending"
+    });
+
+    // 6. IRS Acceptance - Check filing acceptance status
+    const filingStatus = dashboardData?.filing_status;
+    const irsStatus = dashboardData?.irs_status;
+    const irsAcceptanceComplete = 
+      filingStatus === "accepted" ||
+      irsStatus === "accepted";
+    statuses.push({
+      label: "IRS Acceptance",
+      completed: irsAcceptanceComplete,
+      icon: irsAcceptanceComplete ? CheckCircle2 : Clock,
+      statusText: irsAcceptanceComplete ? "Completed" : "Pending"
+    });
+
+    return statuses;
+  };
+
+  const taxYearStatuses = calculateTaxYearStatus();
+
   // Helper to render Dashboard Content (or Fallback Intake Panel)
   const renderMainContentPanel = () => {
     const content = dashboardData?.dashboard_content;
+
+    // Load initial guidance content from localStorage or default
+    useEffect(() => {
+      const savedContent = localStorage.getItem("dashboard_guidance_content");
+      if (savedContent) {
+        setGuidanceContent(savedContent);
+      } else if (content?.page_title) {
+        setGuidanceContent(content.page_title);
+      }
+    }, [content]);
+
+    const handleSaveGuidance = () => {
+      localStorage.setItem("dashboard_guidance_content", guidanceContent);
+      setIsEditingGuidance(false);
+      alert("Guidance content saved successfully!");
+    };
+
+    const handleCancelEdit = () => {
+      const savedContent = localStorage.getItem("dashboard_guidance_content");
+      if (savedContent) {
+        setGuidanceContent(savedContent);
+      } else if (content?.page_title) {
+        setGuidanceContent(content.page_title);
+      }
+      setIsEditingGuidance(false);
+    };
 
     if (content && content.page_title) {
       const blocks = content.page_title
@@ -371,9 +550,98 @@ const Dashboard = () => {
         <div className="dt-panel">
           <div className="dt-panel-head">
             <h2>Overview & Guidelines</h2>
+            {!isEditingGuidance && (
+              <button
+                onClick={() => setIsEditingGuidance(true)}
+                style={{
+                  background: "transparent",
+                  border: "1px solid #E5E7EB",
+                  borderRadius: "6px",
+                  padding: "6px 12px",
+                  fontSize: "13px",
+                  fontWeight: 500,
+                  color: "#374151",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  transition: "all 0.2s"
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.background = "#F3F4F6";
+                  e.currentTarget.style.borderColor = "#D1D5DB";
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.background = "transparent";
+                  e.currentTarget.style.borderColor = "#E5E7EB";
+                }}
+              >
+                <Edit3 size={14} />
+                Edit
+              </button>
+            )}
           </div>
 
-          {content.banner_image && (
+          {isEditingGuidance && (
+            <div style={{ marginBottom: "16px" }}>
+              <CKEditor
+                editor={ClassicEditor}
+                data={guidanceContent}
+                onChange={(event, editor) => {
+                  const data = editor.getData();
+                  setGuidanceContent(data);
+                }}
+                config={{
+                  toolbar: ['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', '|', 'undo', 'redo']
+                }}
+              />
+
+              <div style={{ display: "flex", gap: "10px", marginTop: "12px" }}>
+                <button
+                  onClick={handleSaveGuidance}
+                  style={{
+                    background: "linear-gradient(135deg, #1D2347 0%, #2c2f7e 100%)",
+                    color: "#ffffff",
+                    border: "none",
+                    borderRadius: "6px",
+                    padding: "8px 16px",
+                    fontSize: "13px",
+                    fontWeight: 600,
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "6px"
+                  }}
+                >
+                  <Save size={14} />
+                  Save Changes
+                </button>
+                <button
+                  onClick={handleCancelEdit}
+                  style={{
+                    background: "transparent",
+                    color: "#6B7280",
+                    border: "1px solid #E5E7EB",
+                    borderRadius: "6px",
+                    padding: "8px 16px",
+                    fontSize: "13px",
+                    fontWeight: 600,
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "6px"
+                  }}
+                >
+                  <XIcon size={14} />
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
+
+          {!isEditingGuidance && (
+            <>
+              {content.banner_image && (
             <div className="dt-overview-banner">
               <div
                 className="dt-overview-banner-bg"
@@ -386,7 +654,14 @@ const Dashboard = () => {
             </div>
           )}
 
-          {introParagraphs.length > 0 && (
+          {guidanceContent && (
+            <div 
+              style={{ marginBottom: "20px" }}
+              dangerouslySetInnerHTML={{ __html: guidanceContent }}
+            />
+          )}
+
+          {!guidanceContent && introParagraphs.length > 0 && (
             <div style={{ marginBottom: "20px", display: "flex", flexDirection: "column", gap: "10px" }}>
               {introParagraphs.map((para, idx) => (
                 <p key={idx} style={{ fontSize: "14px", lineHeight: "1.6", color: "#374151", margin: 0 }}>
@@ -448,6 +723,8 @@ const Dashboard = () => {
                 </div>
               ))}
             </div>
+          )}
+            </>
           )}
         </div>
       );
@@ -876,7 +1153,50 @@ const Dashboard = () => {
                   </div>
                 </div>
 
-                {/* Panel 2: Point of Contact */}
+                {/* Panel 2: Tax Year 2026 Status */}
+                <div className="dt-panel">
+                  <div className="dt-panel-head" style={{ marginBottom: "14px" }}>
+                    <h2>Tax Year 2026 Status</h2>
+                  </div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                    {taxYearStatuses.map((status, idx) => (
+                      <div
+                        key={idx}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          padding: "10px 12px",
+                          background: "#F9FAFB",
+                          borderRadius: "8px",
+                          border: "1px solid #E5E7EB"
+                        }}
+                      >
+                        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                          <status.icon
+                            size={18}
+                            color={status.completed ? "#10b981" : "#9ca3af"}
+                            strokeWidth={2.5}
+                          />
+                          <span style={{ fontSize: "14px", fontWeight: 500, color: "#374151" }}>
+                            {status.label}
+                          </span>
+                        </div>
+                        <span
+                          style={{
+                            fontSize: "13px",
+                            fontWeight: 600,
+                            color: status.completed ? "#10b981" : "#9ca3af"
+                          }}
+                        >
+                          {status.statusText}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Panel 3: Point of Contact */}
                 <div className="dt-panel">
                   <div className="dt-panel-head" style={{ marginBottom: "10px" }}>
                     <h2>Point of contact</h2>
@@ -898,7 +1218,7 @@ const Dashboard = () => {
                   </button>
                 </div>
 
-                {/* Panel 3: Recent Activity */}
+                {/* Panel 4: Recent Activity */}
                 <div className="dt-panel" style={{ marginBottom: "0" }}>
                   <div className="dt-panel-head" style={{ marginBottom: "4px" }}>
                     <h2>Recent activity</h2>

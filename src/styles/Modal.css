@@ -50,20 +50,21 @@
   justify-content: space-between;
   padding: 1.5rem;
   border-bottom: 1px solid #e5e7eb;
+  border-radius: 0.75rem 0.75rem 0 0;
 }
 
 .modal-header h3 {
   margin: 0;
   font-size: 1.25rem;
   font-weight: 600;
-  color: #1f2937;
+  color: #111827;
 }
 
 .modal-close {
-  background: none;
+  background: transparent;
   border: none;
   cursor: pointer;
-  color: #6b7280;
+  color: #6B7280;
   padding: 0.25rem;
   display: flex;
   align-items: center;
@@ -73,8 +74,8 @@
 }
 
 .modal-close:hover {
-  background: #f3f4f6;
-  color: #1f2937;
+  background: #F3F4F6;
+  color: #374151;
 }
 
 /* Modal Body */
@@ -135,9 +136,9 @@
   background: linear-gradient(135deg, #1D2347 0%, #2c2f7e 100%);
   color: white;
   border: none;
-  padding: 0.7rem 1.8rem;
-  border-radius: 8px;
-  font-size: 0.93rem;
+  padding: 0.75rem 2rem;
+  border-radius: 10px;
+  font-size: 0.9rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
