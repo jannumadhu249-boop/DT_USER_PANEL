@@ -418,6 +418,42 @@ const Taxpayer = () => {
         </div>
 
         <div className="form-container">
+          {/* Page Header with Inline Step Tabs */}
+          <div className="page-header-section">
+            <div className="page-header-left">
+              <div className="page-header-icon">
+                <Users2 size={24} />
+              </div>
+              <div className="page-header-content">
+                <h2 className="page-header-title">Taxpayer Information</h2>
+                <p className="page-header-subtitle">Provide your personal and identification details for tax filing.</p>
+              </div>
+            </div>
+            
+            <div className="page-header-tabs">
+              <div className="step-tab active">
+                <div className="step-tab-circle">1</div>
+                <div className="step-tab-label">Taxpayer</div>
+              </div>
+              <div className="step-tab">
+                <div className="step-tab-circle">2</div>
+                <div className="step-tab-label">Spouse</div>
+              </div>
+              <div className="step-tab">
+                <div className="step-tab-circle">3</div>
+                <div className="step-tab-label">Dependent</div>
+              </div>
+              <div className="step-tab">
+                <div className="step-tab-circle">4</div>
+                <div className="step-tab-label">Address</div>
+              </div>
+              <div className="step-tab">
+                <div className="step-tab-circle">5</div>
+                <div className="step-tab-label">Bank Details</div>
+              </div>
+            </div>
+          </div>
+
           {/* Global Alerts */}
           <div style={{ marginBottom: "1rem" }}>
             {error && (
@@ -502,7 +538,10 @@ const Taxpayer = () => {
             <form onSubmit={handleSubmit}>
               {/* CARD 1: Personal Details */}
               <div className="form-card" style={{ marginBottom: "1.5rem" }}>
-                <h3 className="form-title">Personal Details</h3>
+                <h3 className="form-title">
+                  <User size={20} />
+                  Personal Information
+                </h3>
                 <div className="form-grid">
                   <div className="form-group">
                     <label>
@@ -685,7 +724,10 @@ const Taxpayer = () => {
 
               {/* CARD 2: Contact Details */}
               <div className="form-card" style={{ marginBottom: "1.5rem" }}>
-                <h3 className="form-title">Contact Details</h3>
+                <h3 className="form-title">
+                  <Mail size={20} />
+                  Contact Information
+                </h3>
                 <div className="form-grid">
                   <div className="form-group">
                     <label>
@@ -907,7 +949,10 @@ const Taxpayer = () => {
 
               {/* CARD 3: Referral Details */}
               <div className="form-card" style={{ marginBottom: "1.5rem" }}>
-                <h3 className="form-title">Referral Details</h3>
+                <h3 className="form-title">
+                  <Users2 size={20} />
+                  Referral Details
+                </h3>
                 <div className="form-grid">
                   <div className="form-group full-width">
                     <label>Have you been referred?</label>
@@ -995,24 +1040,33 @@ const Taxpayer = () => {
 
               {/* Save Button - Outside all cards */}
               <div className="form-actions">
-                  <button type="submit" className="btn-save" disabled={loading}>
-                    {loading ? (
-                      <>
-                        <span
-                          className="spinner-border spinner-border-sm me-2"
-                          role="status"
-                          aria-hidden="true"
-                        ></span>
-                        Saving...
-                      </>
-                    ) : (
-                      "Save & Continue"
-                    )}
-                  </button>
-                </div>
-              </form>
-            )}
-          </div>
+                <button type="button" className="btn-clear-form" onClick={() => {
+                  window.location.reload();
+                }}>
+                  <X size={18} />
+                  Clear Form
+                </button>
+                <button type="submit" className="btn-save" disabled={loading}>
+                  {loading ? (
+                    <>
+                      <span
+                        className="spinner-border spinner-border-sm me-2"
+                        role="status"
+                        aria-hidden="true"
+                      ></span>
+                      Saving...
+                    </>
+                  ) : (
+                    <>
+                      Save & Continue
+                      <span style={{ marginLeft: '0.25rem' }}>→</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          )}
+        </div>
 
         <Footer />
       </main>

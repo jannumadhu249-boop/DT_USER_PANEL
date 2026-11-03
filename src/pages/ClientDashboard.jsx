@@ -523,11 +523,10 @@ const ClientDashboard = () => {
             </div>
 
               {/* ── Tax Return Journey ────────────────────────── */}
-            <div className="cd-journey-panel">
+            {/* <div className="cd-journey-panel">
               <div className="cd-journey-header">
                 <div>
                   <h2 className="cd-journey-title">Tax Year 2026</h2>
-                  {/* <p className="cd-journey-sub">Track each stage of your tax preparation and filing process.</p> */}
                   <p className="cd-joureny-sub">Filing Progress & Workflow</p>
                 </div>
                 <div className="cd-journey-status-badge">Status: {displayStatus}</div>
@@ -552,7 +551,7 @@ const ClientDashboard = () => {
                   );
                 })}
               </div>
-            </div>
+            </div> */}
 
             {/* ── Overview & Guidelines (image + dashboard content in one card) ── */}
             {(canShowOverviewImage || overviewBody) && (
@@ -715,11 +714,11 @@ const ClientDashboard = () => {
             )}
 
             {/* ── Tax Return Journey ────────────────────────── */}
-            {/* <div className="cd-journey-panel">
+            <div className="cd-journey-panel">
               <div className="cd-journey-header">
                 <div>
-                  <h2 className="cd-journey-title">Your Tax Return Journey</h2>
-                  <p className="cd-journey-sub">Track each stage of your tax preparation and filing process.</p>
+                  <h2 className="cd-journey-title">Tax Year 2026</h2>
+                  <p className="cd-journey-sub">Filing Progress & Wrokflow</p>
                 </div>
                 <div className="cd-journey-status-badge">Status: {displayStatus}</div>
               </div>
@@ -743,7 +742,7 @@ const ClientDashboard = () => {
                   );
                 })}
               </div>
-            </div> */}
+            </div>
 
             {/* Bottom Grid */}
             <div className="cd-bottom-grid">
