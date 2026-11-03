@@ -18,8 +18,8 @@ const inputBase = {
 };
 
 const onFocus = (e) => {
-  e.target.style.borderColor = "#4c8d6d";
-  e.target.style.boxShadow = "0 0 0 3px rgba(76, 141, 109,0.12)";
+  e.target.style.borderColor = "#1D2347";
+  e.target.style.boxShadow = "0 0 0 3px rgba(29, 35, 71, 0.12)";
   e.target.style.background = "#fff";
 };
 const onBlur = (e) => {
@@ -367,12 +367,12 @@ const ForgotPassword = () => {
       style={{ overflowX: "hidden", backgroundColor: "#ffffff" }}
     >
       <div className="row g-0 w-100 min-vh-100">
-        {/* Left Side – Colored with brand #4c8d6d */}
+        {/* Left Side – Colored with brand sidebar colors */}
         <div
           className="col-lg-6 col-xl-7 p-0 d-none d-lg-flex flex-column text-white position-relative"
           style={{
             minHeight: "100vh",
-            background: "linear-gradient(135deg, #4c8d6d 0%, #36674e 100%)",
+            background: "linear-gradient(135deg, #1D2347 0%, #2c2f7e 100%)",
           }}
         >
           <div
@@ -479,11 +479,11 @@ const ForgotPassword = () => {
                   <React.Fragment key={s}>
                     <div style={{
                       width: "34px", height: "34px", borderRadius: "50%",
-                      background: done ? "#22c55e" : active ? "#4c8d6d" : "#e2e8f0",
+                      background: done ? "#2c2f7e" : active ? "#1D2347" : "#e2e8f0",
                       color: done || active ? "#fff" : "#94a3b8",
                       display: "flex", alignItems: "center", justifyContent: "center",
                       fontSize: "0.78rem", fontWeight: "800", flexShrink: 0,
-                      boxShadow: active ? "0 0 0 4px rgba(76, 141, 109,0.18)" : "none",
+                      boxShadow: active ? "0 0 0 4px rgba(29, 35, 71, 0.18)" : "none",
                       transition: "all 0.3s",
                     }}>
                       {done ? "✓" : i + 1}
@@ -491,7 +491,7 @@ const ForgotPassword = () => {
                     {i < 2 && (
                       <div style={{
                         height: "2px", flex: 1, maxWidth: "50px",
-                        background: done ? "#22c55e" : "#e2e8f0",
+                        background: done ? "#2c2f7e" : "#e2e8f0",
                         transition: "background 0.3s",
                       }} />
                     )}
@@ -551,7 +551,7 @@ const ForgotPassword = () => {
                     className="btn w-100 py-2 fw-semibold"
                     disabled={loading}
                     style={{
-                      background: "linear-gradient(135deg,#4c8d6d,#2f5c45)",
+                      background: "linear-gradient(135deg, #1D2347 0%, #2c2f7e 100%)",
                       color: "#fff", border: "none", borderRadius: "10px",
                       fontSize: "0.95rem", letterSpacing: "0.3px",
                     }}
@@ -576,7 +576,7 @@ const ForgotPassword = () => {
                   Enter OTP
                 </h3>
                 <p className="text-center text-muted mb-4" style={{ fontSize: "0.88rem" }}>
-                  Code sent to <strong style={{ color: "#4c8d6d" }}>{email || "your email"}</strong>
+                  Code sent to <strong style={{ color: "#1D2347" }}>{email || "your email"}</strong>
                 </p>
                 <form onSubmit={verifyOtp}>
                   <div className="mb-4">
@@ -596,12 +596,12 @@ const ForgotPassword = () => {
                           onChange={(e) => handleOtpChange(i, e.target.value)}
                           onKeyDown={(e) => handleOtpKeyDown(i, e)}
                           onFocus={(e) => {
-                            e.target.style.borderColor = "#4c8d6d";
-                            e.target.style.boxShadow = "0 0 0 4px rgba(76, 141, 109,0.18)";
+                            e.target.style.borderColor = "#1D2347";
+                            e.target.style.boxShadow = "0 0 0 4px rgba(29, 35, 71, 0.18)";
                             e.target.style.background = "#fff";
                           }}
                           onBlur={(e) => {
-                            e.target.style.borderColor = digit ? "#4c8d6d" : "#e2e8f0";
+                            e.target.style.borderColor = digit ? "#1D2347" : "#e2e8f0";
                             e.target.style.boxShadow = "none";
                             e.target.style.background = digit ? "#eef2ff" : "#f8fafc";
                           }}
@@ -611,13 +611,13 @@ const ForgotPassword = () => {
                             textAlign: "center",
                             fontSize: "1.5rem",
                             fontWeight: "800",
-                            border: digit ? "2px solid #4c8d6d" : "2px solid #e2e8f0",
+                            border: digit ? "2px solid #1D2347" : "2px solid #e2e8f0",
                             borderRadius: "12px",
                             background: digit ? "#eef2ff" : "#f8fafc",
                             color: "#1e1b4b",
                             outline: "none",
                             transition: "all 0.2s",
-                            caretColor: "#4c8d6d",
+                            caretColor: "#1D2347",
                             fontFamily: "'Inter', monospace",
                           }}
                         />
@@ -635,7 +635,7 @@ const ForgotPassword = () => {
                     className="btn w-100 py-2 fw-semibold"
                     disabled={loading}
                     style={{
-                      background: "linear-gradient(135deg,#4c8d6d,#2f5c45)",
+                      background: "linear-gradient(135deg, #1D2347 0%, #2c2f7e 100%)",
                       color: "#fff", border: "none", borderRadius: "10px",
                       fontSize: "0.95rem", letterSpacing: "0.3px",
                     }}
@@ -657,7 +657,7 @@ const ForgotPassword = () => {
                     <button
                       type="button"
                       className="btn btn-link p-0 text-decoration-none"
-                      style={{ color: "#4c8d6d", fontSize: "0.85rem", fontWeight: "500" }}
+                      style={{ color: "#1D2347", fontSize: "0.85rem", fontWeight: "500" }}
                       onClick={resendOtp}
                       disabled={loading}
                     >
@@ -764,7 +764,7 @@ const ForgotPassword = () => {
                     className="btn w-100 py-2 fw-semibold"
                     disabled={loading}
                     style={{
-                      background: "linear-gradient(135deg,#4c8d6d,#2f5c45)",
+                      background: "linear-gradient(135deg, #1D2347 0%, #2c2f7e 100%)",
                       color: "#fff", border: "none", borderRadius: "10px",
                       fontSize: "0.95rem", letterSpacing: "0.3px",
                     }}
@@ -786,7 +786,7 @@ const ForgotPassword = () => {
               <Link
                 to="/login"
                 className="text-decoration-none"
-                style={{ color: "#4c8d6d", fontWeight: "500", fontSize: "0.88rem" }}
+                style={{ color: "#1D2347", fontWeight: "500", fontSize: "0.88rem" }}
               >
                 ← Back to Login
               </Link>

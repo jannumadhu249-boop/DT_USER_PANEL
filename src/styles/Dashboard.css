@@ -525,7 +525,7 @@
 }
 
 .step-card:hover {
-  border-color: #4c8d6d;
+  border-color: #1D2347;
   transform: translateY(-4px);
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
 }
@@ -548,7 +548,7 @@
 }
 
 .step-icon.step-1 {
-  background: linear-gradient(135deg, #4c8d6d 0%, #2f5c45 100%);
+  background: linear-gradient(135deg, #1D2347 0%, #2c2f7e 100%);
 }
 
 .step-icon.step-2 {
@@ -556,12 +556,12 @@
 }
 
 .step-icon.step-3 {
-  background: linear-gradient(135deg, #4c8d6d 0%, #2f5c45 100%);
+  background: linear-gradient(135deg, #1D2347 0%, #2c2f7e 100%);
 }
 
 .step-number {
   background: white;
-  color: #4c8d6d;
+  color: #1D2347;
   width: 40px;
   height: 40px;
   border-radius: 50%;
@@ -570,7 +570,7 @@
   justify-content: center;
   font-weight: 700;
   font-size: 1.25rem;
-  border: 2px solid #4c8d6d;
+  border: 2px solid #1D2347;
 }
 
 .step-card h4 {
@@ -639,13 +639,14 @@
 
 /* Breadcrumb Styles */
 .breadcrumb {
-  padding: 1rem 2rem;
+  padding: 0.75rem 2rem;
   background: #f9fafb;
   border-bottom: 1px solid #e5e7eb;
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-size: 0.875rem;
+  font-size: 0.85rem;
+  margin-bottom: 0.5rem;
 }
 
 .breadcrumb a {
@@ -655,7 +656,7 @@
 }
 
 .breadcrumb a:hover {
-  color: #2f5c45;
+  color: #1D2347;
   text-decoration: none;
 }
 
@@ -1075,7 +1076,7 @@ select.form-control,
 }
 
 .file-upload-label:hover {
-  border-color: #4c8d6d;
+  border-color: #1D2347;
 }
 
 .file-upload-button {
@@ -1158,7 +1159,7 @@ select.form-control,
 }
 
 .password-toggle-btn:hover {
-  color: #4c8d6d;
+  color: #1D2347;
 }
 
 .btn-cancel {
@@ -1243,12 +1244,12 @@ select.form-control,
 }
 
 .summary-card-item:hover {
-  border-color: #4c8d6d;
+  border-color: #1D2347;
   transform: translateY(-4px);
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
 }
 
-/* Individual Colors */
+/* Individual Colors - removed green */
 /* .summary-card-item:nth-child(1) {
   background: #f0f7ff;
   border-left-color: #3b82f6;
@@ -1256,7 +1257,7 @@ select.form-control,
 
 .summary-card-item:nth-child(2) {
   background: #f0fdf4;
-  border-left-color: #22c55e;
+  border-left-color: #1D2347;
 }
 
 .summary-card-item:nth-child(3) {
@@ -1497,12 +1498,12 @@ select.form-control,
   padding: 1rem 1.25rem;
   border-radius: 0.5rem;
   margin-bottom: 2rem;
-  border-left: 4px solid #4c8d6d;
+  border-left: 4px solid #1D2347;
 }
 
 .referring-code p {
   font-size: 0.95rem;
-  color: #4c8d6d;
+  color: #1D2347;
   margin: 0;
   font-weight: 600;
   font-family: 'Courier New', monospace;
@@ -1534,8 +1535,8 @@ select.form-control,
 
 .refer-form-card .form-control:focus {
   outline: none;
-  border-color: #4c8d6d;
-  box-shadow: 0 0 0 3px rgba(196, 30, 58, 0.1);
+  border-color: #1D2347;
+  box-shadow: 0 0 0 3px rgba(29, 35, 71, 0.1);
 }
 
 .refer-form-card .form-control::placeholder {
@@ -2388,12 +2389,12 @@ select.form-control,
   align-items: center;
   gap: 0.35rem;
   background: #e0e7ff;
-  color: #2f5c45;
+  color: #1D2347;
   padding: 0.4rem 0.85rem;
   border-radius: 9999px;
   font-size: 0.85rem;
   font-weight: 500;
-  border: 1px solid #c8e2d4;
+  border: 1px solid #c7d2fe;
 }
 
 .file-status-badge strong {
@@ -2406,7 +2407,7 @@ select.form-control,
   align-items: center;
   gap: 0.5rem;
   margin-top: 1.25rem;
-  background: #4c8d6d;
+  background: #1D2347;
   color: white;
   border: none;
   padding: 0.55rem 1.15rem;
@@ -2418,9 +2419,9 @@ select.form-control,
 }
 
 .section-action-btn:hover {
-  background: #2f5c45;
+  background: #2c2f7e;
   transform: translateY(-1px);
-  box-shadow: 0 4px 10px rgba(76, 141, 109, 0.25);
+  box-shadow: 0 4px 10px rgba(29, 35, 71, 0.25);
 }
 
 .dashboard-loading-state {
@@ -2435,7 +2436,7 @@ select.form-control,
 
 .spinner-icon {
   animation: spin 1s linear infinite;
-  color: #4c8d6d;
+  color: #1D2347;
 }
 
 @keyframes spin {

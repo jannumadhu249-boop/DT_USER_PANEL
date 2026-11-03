@@ -22,9 +22,6 @@ import WelcomeModal from "../Components/WelcomeModal";
 import "../styles/Dashboard.css";
 import "../styles/ClientDashboard.css";
 
-import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-
 const Dashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [user, setUser] = useState(null);
@@ -35,7 +32,6 @@ const Dashboard = () => {
   const [welcomeUserData, setWelcomeUserData] = useState(null);
   const [taxpayerData, setTaxpayerData] = useState(null);
   const [documentsData, setDocumentsData] = useState(null);
-  const [isEditingGuidance, setIsEditingGuidance] = useState(false);
   const [guidanceContent, setGuidanceContent] = useState("");
 
   const navigate = useNavigate();
@@ -582,66 +578,7 @@ const Dashboard = () => {
             )}
           </div>
 
-          {isEditingGuidance && (
-            <div style={{ marginBottom: "16px" }}>
-              <CKEditor
-                editor={ClassicEditor}
-                data={guidanceContent}
-                onChange={(event, editor) => {
-                  const data = editor.getData();
-                  setGuidanceContent(data);
-                }}
-                config={{
-                  toolbar: ['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', '|', 'undo', 'redo']
-                }}
-              />
-
-              <div style={{ display: "flex", gap: "10px", marginTop: "12px" }}>
-                <button
-                  onClick={handleSaveGuidance}
-                  style={{
-                    background: "linear-gradient(135deg, #1D2347 0%, #2c2f7e 100%)",
-                    color: "#ffffff",
-                    border: "none",
-                    borderRadius: "6px",
-                    padding: "8px 16px",
-                    fontSize: "13px",
-                    fontWeight: 600,
-                    cursor: "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "6px"
-                  }}
-                >
-                  <Save size={14} />
-                  Save Changes
-                </button>
-                <button
-                  onClick={handleCancelEdit}
-                  style={{
-                    background: "transparent",
-                    color: "#6B7280",
-                    border: "1px solid #E5E7EB",
-                    borderRadius: "6px",
-                    padding: "8px 16px",
-                    fontSize: "13px",
-                    fontWeight: 600,
-                    cursor: "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "6px"
-                  }}
-                >
-                  <XIcon size={14} />
-                  Cancel
-                </button>
-              </div>
-            </div>
-          )}
-
-          {!isEditingGuidance && (
-            <>
-              {content.banner_image && (
+          {content.banner_image && (
             <div className="dt-overview-banner">
               <div
                 className="dt-overview-banner-bg"
@@ -723,8 +660,6 @@ const Dashboard = () => {
                 </div>
               ))}
             </div>
-          )}
-            </>
           )}
         </div>
       );

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useContext, useCallback, useRef, useLayoutEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../Components/Sidebar";
 import Header from "../Components/Header";
@@ -36,9 +36,6 @@ import WelcomeModal from "../Components/WelcomeModal";
 import "../styles/Dashboard.css";
 import "../styles/ClientDashboard.css";
 import SendQueryModal from "../Components/SendQueryModal";
-
-import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 // Banner image component — tries all candidate URLs with fallback
 const OverviewBannerImg = ({ imagePath }) => {
@@ -150,6 +147,20 @@ const ClientDashboard = () => {
       window.removeEventListener("resize", handleResize);
     };
   }, [navigate]);
+
+  // Load initial guidance content from localStorage or dashboard data
+  useEffect(() => {
+    const savedContent = localStorage.getItem("client_dashboard_guidance_content");
+    if (savedContent) {
+      setGuidanceContent(savedContent);
+    } else if (dashboardData) {
+      const dashboardContent = dashboardData?.dashboard_content || dashboardData?.dashboardContent;
+      const overviewBodyLocal = dashboardContent?.page_title || dashboardContent?.description || "";
+      if (overviewBodyLocal) {
+        setGuidanceContent(overviewBodyLocal);
+      }
+    }
+  }, [dashboardData]);
 
   if (!user) return null;
 
@@ -387,32 +398,25 @@ const ClientDashboard = () => {
 
   const handleCancelEdit = () => {
     const savedContent = localStorage.getItem("client_dashboard_guidance_content");
+    const dashboardContent = dashboardData?.dashboard_content || dashboardData?.dashboardContent;
+    const overviewBodyLocal = dashboardContent?.page_title || dashboardContent?.description || "";
+    
     if (savedContent) {
       setGuidanceContent(savedContent);
-    } else if (overviewBody) {
-      setGuidanceContent(overviewBody);
+    } else if (overviewBodyLocal) {
+      setGuidanceContent(overviewBodyLocal);
     }
     setIsEditingGuidance(false);
   };
-
-  // Load initial guidance content from localStorage or default
-  useEffect(() => {
-    const savedContent = localStorage.getItem("client_dashboard_guidance_content");
-    if (savedContent) {
-      setGuidanceContent(savedContent);
-    } else if (overviewBody) {
-      setGuidanceContent(overviewBody);
-    }
-  }, [overviewBody]);
 
   const ActivityIcon = ({ type }) => {
     const base = { width: 36, height: 36, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 };
     const t = (type || "").toLowerCase();
     if (t.includes("check") || t.includes("accept") || t.includes("complete")) {
-      return <div style={{ ...base, background: "#EEF2FF", color: "#4c8d6d" }}><Check size={16} /></div>;
+      return <div style={{ ...base, background: "#EEF2FF", color: "#1D2347" }}><Check size={16} /></div>;
     }
     if (t.includes("calendar") || t.includes("schedule")) {
-      return <div style={{ ...base, background: "#F0FDF4", color: "#16A34A" }}><Calendar size={16} /></div>;
+      return <div style={{ ...base, background: "#F0FDF4", color: "#2c2f7e" }}><Calendar size={16} /></div>;
     }
     if (t.includes("payment") || t.includes("fee")) {
       return <div style={{ ...base, background: "#FEF3C7", color: "#D97706" }}><FileText size={16} /></div>;
@@ -421,7 +425,7 @@ const ClientDashboard = () => {
       return <div style={{ ...base, background: "#F1F5F9", color: "#64748B" }}><Upload size={16} /></div>;
     }
     if (t.includes("user") || t.includes("account") || t.includes("basic") || t.includes("register")) {
-      return <div style={{ ...base, background: "#F1F5F9", color: "#4c8d6d" }}><User size={16} /></div>;
+      return <div style={{ ...base, background: "#F1F5F9", color: "#1D2347" }}><User size={16} /></div>;
     }
     return <div style={{ ...base, background: "#F1F5F9", color: "#64748B" }}><FileText size={16} /></div>;
   };
@@ -514,7 +518,7 @@ const ClientDashboard = () => {
                   <div className="cd-metric-icon cd-icon-blue"><FileText size={16} /></div>
                 </div>
                 <p className="cd-metric-value cd-mono">#{displayFileNo || "—"}</p>
-                <span className="cd-metric-badge cd-badge-green">{displayStatus}</span>
+                <span className="cd-metric-badge cd-badge-navy">{displayStatus}</span>
               </div>
 
               <div className="cd-metric-card">
@@ -600,39 +604,9 @@ const ClientDashboard = () => {
                       <p className="cd-overview-sub">Tax filing updates and official procedural notes for your account</p>
                     </div>
                   </div>
-                  {!isEditingGuidance && (
-                    <button
-                      onClick={() => setIsEditingGuidance(true)}
-                      style={{
-                        background: "transparent",
-                        border: "1px solid #E5E7EB",
-                        borderRadius: "6px",
-                        padding: "6px 12px",
-                        fontSize: "13px",
-                        fontWeight: 500,
-                        color: "#374151",
-                        cursor: "pointer",
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "6px",
-                        transition: "all 0.2s"
-                      }}
-                      onMouseOver={(e) => {
-                        e.currentTarget.style.background = "#F3F4F6";
-                        e.currentTarget.style.borderColor = "#D1D5DB";
-                      }}
-                      onMouseOut={(e) => {
-                        e.currentTarget.style.background = "transparent";
-                        e.currentTarget.style.borderColor = "#E5E7EB";
-                      }}
-                    >
-                      <Edit3 size={14} />
-                      Edit
-                    </button>
-                  )}
                 </div>
 
-                {isEditingGuidance && (
+                {/* {isEditingGuidance && (
                   <div style={{ marginBottom: "16px" }}>
                     <CKEditor
                       editor={ClassicEditor}
@@ -687,7 +661,7 @@ const ClientDashboard = () => {
                       </button>
                     </div>
                   </div>
-                )}
+                )} */}
 
                 {!isEditingGuidance && (
                   <>
@@ -981,7 +955,7 @@ const ClientDashboard = () => {
             </div>
             <div style={{ padding: "24px" }}>
               {pocSuccess && (
-                <div style={{ padding: "12px 16px", background: "#D1FAE5", border: "1px solid #10B981", borderRadius: "8px", marginBottom: "16px", display: "flex", alignItems: "center", gap: "8px", fontSize: "14px", color: "#065F46" }}>
+                <div style={{ padding: "12px 16px", background: "#EEF2FF", border: "1px solid #1D2347", borderRadius: "8px", marginBottom: "16px", display: "flex", alignItems: "center", gap: "8px", fontSize: "14px", color: "#1e1b4b" }}>
                   <Check size={18} /><span>{pocSuccess}</span>
                 </div>
               )}
@@ -993,7 +967,7 @@ const ClientDashboard = () => {
               <label style={{ display: "block", fontSize: "14px", fontWeight: 600, color: "#374151", marginBottom: "8px" }}>Your Message</label>
               <textarea value={pocMessage} onChange={(e) => setPocMessage(e.target.value)} placeholder="Type your message here..." rows={5}
                 style={{ width: "100%", padding: "12px", border: "1px solid #D1D5DB", borderRadius: "8px", fontSize: "14px", fontFamily: "inherit", resize: "vertical", boxSizing: "border-box", outline: "none" }}
-                onFocus={(e) => e.currentTarget.style.borderColor = "#4c8d6d"}
+                onFocus={(e) => e.currentTarget.style.borderColor = "#1D2347"}
                 onBlur={(e) => e.currentTarget.style.borderColor = "#D1D5DB"}
                 disabled={pocSending} autoFocus />
             </div>
@@ -1003,7 +977,7 @@ const ClientDashboard = () => {
                 Cancel
               </button>
               <button onClick={handleSendPocMessage} disabled={pocSending || !pocMessage.trim()}
-                style={{ padding: "10px 24px", background: "linear-gradient(135deg,#4c8d6d,#3d7559)", border: "none", borderRadius: "8px", fontSize: "14px", fontWeight: 500, color: "#fff", cursor: pocSending || !pocMessage.trim() ? "not-allowed" : "pointer", opacity: pocSending || !pocMessage.trim() ? 0.6 : 1, display: "flex", alignItems: "center", gap: "8px" }}>
+                style={{ padding: "10px 24px", background: "linear-gradient(135deg, #1D2347 0%, #2c2f7e 100%)", border: "none", borderRadius: "8px", fontSize: "14px", fontWeight: 500, color: "#fff", cursor: pocSending || !pocMessage.trim() ? "not-allowed" : "pointer", opacity: pocSending || !pocMessage.trim() ? 0.6 : 1, display: "flex", alignItems: "center", gap: "8px" }}>
                 {pocSending ? <><Loader2 size={16} className="spin" /><span>Sending...</span></> : <><Send size={16} /><span>Send Message</span></>}
               </button>
             </div>
