@@ -169,10 +169,43 @@ const SendQueryModal = ({ isOpen, onClose, onSuccess }) => {
             </div>
           </div>
 
-          <div className="modal-footer">
+          <div className="modal-footer" style={{ display: "flex", gap: "12px", justifyContent: "flex-end" }}>
+            <button
+              type="button"
+              onClick={onClose}
+              style={{
+                background: "transparent",
+                border: "2px solid #6B7280",
+                color: "#6B7280",
+                borderRadius: "8px",
+                padding: "0.65rem 1.5rem",
+                fontFamily: "'Poppins', sans-serif",
+                fontWeight: 600,
+                fontSize: "0.9rem",
+                cursor: "pointer",
+                transition: "all 0.2s ease"
+              }}
+            >
+              Cancel
+            </button>
             <button
               type="submit"
-              className="btn-send-question"
+              style={{
+                background: "#5cb389",
+                border: "none",
+                color: "#ffffff",
+                borderRadius: "8px",
+                padding: "0.65rem 1.5rem",
+                fontFamily: "'Poppins', sans-serif",
+                fontWeight: 600,
+                fontSize: "0.9rem",
+                cursor: "pointer",
+                transition: "all 0.2s ease",
+                boxShadow: "0 2px 8px rgba(92, 179, 137, 0.25)",
+                display: "flex",
+                alignItems: "center",
+                gap: "8px"
+              }}
               disabled={loading}
             >
               {loading ? (
@@ -180,12 +213,12 @@ const SendQueryModal = ({ isOpen, onClose, onSuccess }) => {
                   <Loader2
                     size={18}
                     className="spinner"
-                    style={{ marginRight: "8px", animation: "spin 1s linear infinite" }}
+                    style={{ animation: "spin 1s linear infinite" }}
                   />
                   Sending...
                 </>
               ) : (
-                "Send Question"
+                "Send Message"
               )}
             </button>
           </div>

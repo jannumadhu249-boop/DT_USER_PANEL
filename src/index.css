@@ -257,7 +257,7 @@ a:hover {
   padding: 0.6rem 0.9rem 0.6rem 2.75rem !important;
 }
 
-/* ── Buttons — unified brand gradient style ── */
+/* ── Buttons — unified solid brand color style ── */
 .btn-primary,
 .btn-danger,
 .btn-auth,
@@ -272,7 +272,7 @@ a:hover {
 .btn-search,
 .ts-search-btn,
 .search-btn {
-  background: linear-gradient(135deg, #1D2347 0%, #2c2f7e 100%) !important;
+  background: #1D2347 !important;
   border: none !important;
   color: #ffffff !important;
   font-family: 'Poppins', sans-serif !important;
@@ -299,7 +299,7 @@ a:hover {
 .btn-search:hover,
 .ts-search-btn:hover,
 .search-btn:hover {
-  background: linear-gradient(135deg, #262b5c 0%, #3a3e9e 100%) !important;
+  background: #262b5c !important;
   color: #ffffff !important;
   transform: translateY(-2px) !important;
   box-shadow: 0 6px 18px rgba(29, 35, 71, 0.35) !important;
@@ -337,8 +337,8 @@ a:hover {
 .btn-outline-secondary,
 .btn-clear {
   background: transparent !important;
-  border: 2px solid #6B7280 !important;
-  color: #6B7280 !important;
+  border: 2px solid #000000 !important;
+  color: #000000 !important;
   border-radius: 10px !important;
   padding: 0.75rem 2rem !important;
   font-family: 'Poppins', sans-serif !important;
@@ -349,8 +349,8 @@ a:hover {
 .btn-outline-secondary:hover,
 .btn-clear:hover {
   background: #f9fafb !important;
-  border-color: #4B5563 !important;
-  color: #4B5563 !important;
+  border-color: #000000 !important;
+  color: #000000 !important;
 }
 
 /* ── Radio buttons — purple-blue theme ── */

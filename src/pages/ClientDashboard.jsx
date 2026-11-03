@@ -21,6 +21,8 @@ import {
   HelpCircle,
   Headphones,
   User,
+  Edit3,
+  Save,
 } from "lucide-react";
 import { getStoredUser, isEmailVerified } from "../utils/user";
 import {
@@ -34,6 +36,9 @@ import WelcomeModal from "../Components/WelcomeModal";
 import "../styles/Dashboard.css";
 import "../styles/ClientDashboard.css";
 import SendQueryModal from "../Components/SendQueryModal";
+
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 // Banner image component — tries all candidate URLs with fallback
 const OverviewBannerImg = ({ imagePath }) => {
@@ -78,6 +83,8 @@ const ClientDashboard = () => {
   const [pocSuccess, setPocSuccess] = useState("");
   const [pocError, setPocError] = useState("");
   const [isQueryModalOpen, setIsQueryModalOpen] = useState(false);
+  const [isEditingGuidance, setIsEditingGuidance] = useState(false);
+  const [guidanceContent, setGuidanceContent] = useState("");
 
   const navigate = useNavigate();
 
@@ -371,6 +378,33 @@ const ClientDashboard = () => {
     }
   };
 
+  // CKEditor handlers for Overview & Guidelines
+  const handleSaveGuidance = () => {
+    localStorage.setItem("client_dashboard_guidance_content", guidanceContent);
+    setIsEditingGuidance(false);
+    alert("Guidance content saved successfully!");
+  };
+
+  const handleCancelEdit = () => {
+    const savedContent = localStorage.getItem("client_dashboard_guidance_content");
+    if (savedContent) {
+      setGuidanceContent(savedContent);
+    } else if (overviewBody) {
+      setGuidanceContent(overviewBody);
+    }
+    setIsEditingGuidance(false);
+  };
+
+  // Load initial guidance content from localStorage or default
+  useEffect(() => {
+    const savedContent = localStorage.getItem("client_dashboard_guidance_content");
+    if (savedContent) {
+      setGuidanceContent(savedContent);
+    } else if (overviewBody) {
+      setGuidanceContent(overviewBody);
+    }
+  }, [overviewBody]);
+
   const ActivityIcon = ({ type }) => {
     const base = { width: 36, height: 36, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 };
     const t = (type || "").toLowerCase();
@@ -554,7 +588,7 @@ const ClientDashboard = () => {
             </div> */}
 
             {/* ── Overview & Guidelines (image + dashboard content in one card) ── */}
-            {(canShowOverviewImage || overviewBody) && (
+            {(canShowOverviewImage || overviewBody || guidanceContent) && (
               <div className="cd-overview-panel">
                 <div className="cd-overview-head">
                   <div className="cd-overview-icon-title">
@@ -566,16 +600,113 @@ const ClientDashboard = () => {
                       <p className="cd-overview-sub">Tax filing updates and official procedural notes for your account</p>
                     </div>
                   </div>
+                  {!isEditingGuidance && (
+                    <button
+                      onClick={() => setIsEditingGuidance(true)}
+                      style={{
+                        background: "transparent",
+                        border: "1px solid #E5E7EB",
+                        borderRadius: "6px",
+                        padding: "6px 12px",
+                        fontSize: "13px",
+                        fontWeight: 500,
+                        color: "#374151",
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "6px",
+                        transition: "all 0.2s"
+                      }}
+                      onMouseOver={(e) => {
+                        e.currentTarget.style.background = "#F3F4F6";
+                        e.currentTarget.style.borderColor = "#D1D5DB";
+                      }}
+                      onMouseOut={(e) => {
+                        e.currentTarget.style.background = "transparent";
+                        e.currentTarget.style.borderColor = "#E5E7EB";
+                      }}
+                    >
+                      <Edit3 size={14} />
+                      Edit
+                    </button>
+                  )}
                 </div>
 
-                <div className="cd-overview-unified">
-                  {canShowOverviewImage && (
-                    <OverviewBannerImg imagePath={overviewImage} />
-                  )}
-                  {overviewBody && (
-                    <p className="cd-overview-body">{overviewBody}</p>
-                  )}
-                </div>
+                {isEditingGuidance && (
+                  <div style={{ marginBottom: "16px" }}>
+                    <CKEditor
+                      editor={ClassicEditor}
+                      data={guidanceContent}
+                      onChange={(event, editor) => {
+                        const data = editor.getData();
+                        setGuidanceContent(data);
+                      }}
+                      config={{
+                        toolbar: ['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', '|', 'undo', 'redo']
+                      }}
+                    />
+
+                    <div style={{ display: "flex", gap: "10px", marginTop: "12px" }}>
+                      <button
+                        onClick={handleSaveGuidance}
+                        style={{
+                          background: "#1D2347",
+                          color: "#ffffff",
+                          border: "none",
+                          borderRadius: "6px",
+                          padding: "8px 16px",
+                          fontSize: "13px",
+                          fontWeight: 600,
+                          cursor: "pointer",
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "6px"
+                        }}
+                      >
+                        <Save size={14} />
+                        Save Changes
+                      </button>
+                      <button
+                        onClick={handleCancelEdit}
+                        style={{
+                          background: "transparent",
+                          color: "#6B7280",
+                          border: "1px solid #E5E7EB",
+                          borderRadius: "6px",
+                          padding: "8px 16px",
+                          fontSize: "13px",
+                          fontWeight: 600,
+                          cursor: "pointer",
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "6px"
+                        }}
+                      >
+                        <X size={14} />
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {!isEditingGuidance && (
+                  <>
+                    <div className="cd-overview-unified">
+                      {canShowOverviewImage && (
+                        <OverviewBannerImg imagePath={overviewImage} />
+                      )}
+                      {guidanceContent && (
+                        <div 
+                          className="cd-overview-body"
+                          dangerouslySetInnerHTML={{ __html: guidanceContent }}
+                        />
+                      )}
+                      {!guidanceContent && overviewBody && (
+                        <p className="cd-overview-body">{overviewBody}</p>
+                      )}
+                    </div>
+                  </>
+                )}
               </div>
             )}
 
