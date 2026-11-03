@@ -236,7 +236,7 @@ const VerifyEmail = () => {
                 style={{
                   display: "inline-flex",
                   background: "#eef2ff",
-                  color: "#4c8d6d",
+                  color: "#2c2f7e",
                   padding: "0.75rem",
                   borderRadius: "50%",
                   marginBottom: "0.75rem",
@@ -303,13 +303,13 @@ const VerifyEmail = () => {
                         textAlign: "center",
                         fontSize: "1.5rem",
                         fontWeight: "800",
-                        border: digit ? "2px solid #4c8d6d" : "2px solid #e2e8f0",
+                        border: digit ? "2px solid #2c2f7e" : "2px solid #e2e8f0",
                         borderRadius: "12px",
                         background: digit ? "#eef2ff" : "#f8fafc",
                         color: "#1e1b4b",
                         outline: "none",
                         transition: "all 0.2s",
-                        caretColor: "#4c8d6d",
+                        caretColor: "#2c2f7e",
                         fontFamily: "'Inter', monospace",
                         cursor: loading || isVerified || sendingOtp ? "not-allowed" : "text",
                         opacity: loading || isVerified || sendingOtp ? 0.6 : 1,
@@ -345,7 +345,7 @@ const VerifyEmail = () => {
                   onClick={handleResend}
                   disabled={resendCooldown > 0 || loading || isVerified || sendingOtp}
                   style={{
-                    color: "#4c8d6d",
+                    color: "#2c2f7e",
                     fontSize: "0.85rem",
                     fontWeight: "500",
                     background: "transparent",

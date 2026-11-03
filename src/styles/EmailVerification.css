@@ -39,7 +39,7 @@
 .verify-icon {
   display: inline-flex;
   background: #eef2ff;
-  color: #4c8d6d;
+  color: #2c2f7e;
   padding: 0.75rem;
   border-radius: 50%;
   margin-bottom: 0.75rem;
@@ -117,12 +117,12 @@
 }
 
 .otp-box:focus {
-  border-color: #4c8d6d;
-  box-shadow: 0 0 0 3px rgba(76, 141, 109, 0.15);
+  border-color: #2c2f7e;
+  box-shadow: 0 0 0 3px rgba(44, 47, 126, 0.15);
 }
 
 .otp-box.filled {
-  border-color: #4c8d6d;
+  border-color: #2c2f7e;
   background: #ffffff;
 }
 
@@ -156,12 +156,12 @@
 }
 
 .btn-verify {
-  background: #4c8d6d;
+  background: #1D2347;
   color: #fff;
 }
 
 .btn-verify:hover:not(:disabled) {
-  background: #3d7559;
+  background: #2c2f7e;
 }
 
 .btn-verify:disabled {

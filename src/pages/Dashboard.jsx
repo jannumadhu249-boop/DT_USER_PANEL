@@ -1110,7 +1110,7 @@ const Dashboard = () => {
                         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                           <status.icon
                             size={18}
-                            color={status.completed ? "#10b981" : "#9ca3af"}
+                            color={status.completed ? "#2c2f7e" : "#9ca3af"}
                             strokeWidth={2.5}
                           />
                           <span style={{ fontSize: "14px", fontWeight: 500, color: "#374151" }}>
@@ -1121,7 +1121,7 @@ const Dashboard = () => {
                           style={{
                             fontSize: "13px",
                             fontWeight: 600,
-                            color: status.completed ? "#10b981" : "#9ca3af"
+                            color: status.completed ? "#2c2f7e" : "#9ca3af"
                           }}
                         >
                           {status.statusText}

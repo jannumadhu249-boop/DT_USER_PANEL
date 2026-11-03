@@ -355,7 +355,7 @@ const Login = () => {
           className="col-lg-6 col-xl-7 p-0 d-none d-lg-flex flex-column text-white position-relative"
           style={{
             minHeight: "100vh",
-            background: "linear-gradient(135deg, #4c8d6d 0%, #36674e 100%)",
+            background: "linear-gradient(135deg, #1D2347 0%, #2c2f7e 100%)",
           }}
         >
           <div
@@ -547,7 +547,7 @@ const Login = () => {
                     </div>
                     <Link
                       to="/forgot-password"
-                      style={{ color: "#4c8d6d", textDecoration: "none", fontSize: "0.85rem", fontWeight: "600" }}
+                      style={{ color: "#2c2f7e", textDecoration: "none", fontSize: "0.85rem", fontWeight: "600" }}
                     >
                       Forgot Password?
                     </Link>
@@ -581,7 +581,7 @@ const Login = () => {
                   type="button"
                   className="btn w-100 py-2 d-flex align-items-center justify-content-center gap-2"
                   onClick={switchToOtpMode}
-                  style={{ borderRadius: "10px", fontWeight: "600", fontSize: "0.92rem", border: "1.5px solid #4c8d6d", color: "#4c8d6d", backgroundColor: "#fff" }}
+                  style={{ borderRadius: "10px", fontWeight: "600", fontSize: "0.92rem", border: "1.5px solid #2c2f7e", color: "#2c2f7e", backgroundColor: "#fff" }}
                 >
                   <ShieldCheck size={18} />
                   Proceed with email otp
@@ -627,7 +627,7 @@ const Login = () => {
                       <button
                         type="button"
                         className="btn btn-link p-0 text-decoration-none"
-                        style={{ fontSize: "0.8rem", color: "#4c8d6d", fontWeight: "600" }}
+                        style={{ fontSize: "0.8rem", color: "#2c2f7e", fontWeight: "600" }}
                         onClick={() => {
                           setOtpStep("enter_email");
                           setOtpMessage({ type: "", text: "" });
@@ -698,9 +698,9 @@ const Login = () => {
                             height: "50px",
                             fontSize: "1.25rem",
                             borderRadius: "8px",
-                            borderColor: digit ? "#4c8d6d" : "#cbd5e1",
+                            borderColor: digit ? "#2c2f7e" : "#cbd5e1",
                             backgroundColor: digit ? "#f8fafc" : "#fff",
-                            boxShadow: digit ? "0 0 0 2px rgba(76, 141, 109, 0.15)" : "none",
+                            boxShadow: digit ? "0 0 0 2px rgba(44, 47, 126, 0.15)" : "none",
                           }}
                         />
                       ))}
@@ -714,7 +714,7 @@ const Login = () => {
                         <button
                           type="button"
                           className="btn btn-link p-0 text-decoration-none fw-semibold"
-                          style={{ color: "#4c8d6d" }}
+                          style={{ color: "#2c2f7e" }}
                           onClick={handleSendOtp}
                           disabled={otpLoading}
                         >
@@ -761,7 +761,7 @@ const Login = () => {
             {/* Register Link */}
             <p className="text-center mb-0 mt-4" style={{ fontSize: "0.9rem", color: "#64748b" }}>
               Don't have an account?{" "}
-              <Link to="/register" style={{ color: "#4c8d6d", textDecoration: "none", fontWeight: "600" }}>
+              <Link to="/register" style={{ color: "#2c2f7e", textDecoration: "none", fontWeight: "600" }}>
                 Register
               </Link>
             </p>

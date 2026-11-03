@@ -779,7 +779,7 @@ const Profile = () => {
                           <button
                             type="button"
                             className="btn btn-link p-0 text-decoration-none small"
-                            style={{ color: "#4c8d6d", fontSize: "0.8rem" }}
+                            style={{ color: "#2c2f7e", fontSize: "0.8rem" }}
                             onClick={() => {
                               setOtpStep("input");
                               setModalError("");
@@ -806,7 +806,7 @@ const Profile = () => {
                                 height: "48px",
                                 fontSize: "1.2rem",
                                 borderRadius: "8px",
-                                borderColor: digit ? "#4c8d6d" : "#cbd5e1",
+                                borderColor: digit ? "#2c2f7e" : "#cbd5e1",
                               }}
                             />
                           ))}
@@ -820,7 +820,7 @@ const Profile = () => {
                             <button
                               type="button"
                               className="btn btn-link p-0 text-decoration-none fw-semibold"
-                              style={{ color: "#4c8d6d" }}
+                              style={{ color: "#2c2f7e" }}
                               onClick={handleSendEmailOtp}
                               disabled={modalLoading}
                             >

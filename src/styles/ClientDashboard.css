@@ -1135,7 +1135,7 @@
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background: #10B981;
+  background: #2c2f7e;
   color: #fff;
   display: flex;
   align-items: center;
@@ -1625,8 +1625,8 @@
 }
 
 .cd-quick-action:hover {
-  border-color: #4c8d6d;
-  box-shadow: 0 6px 18px rgba(76, 141, 109, 0.14);
+  border-color: #2c2f7e;
+  box-shadow: 0 6px 18px rgba(44, 47, 126, 0.14);
   transform: translateY(-3px);
   color: #1a3d2e;
 }
@@ -1640,7 +1640,7 @@
   justify-content: center;
 }
 
-.cd-qa-blue  { background: #EEF2FF; color: #4c8d6d; }
+.cd-qa-blue  { background: #EEF2FF; color: #2c2f7e; }
 .cd-qa-teal  { background: #F0FDFA; color: #0D9488; }
 .cd-qa-orange { background: #FFF7ED; color: #EA580C; }
 .cd-qa-purple { background: #F5F3FF; color: #7C3AED; }
@@ -1701,12 +1701,12 @@
 }
 
 .cd-assist-primary {
-  background: #4c8d6d;
+  background: #1D2347;
   color: #fff;
 }
 
 .cd-assist-primary:hover {
-  background: #3d7559;
+  background: #2c2f7e;
   transform: translateY(-1px);
 }
 
@@ -1793,8 +1793,8 @@
   width: 40px;
   height: 40px;
   border-radius: 10px;
-  background: #edf5f1;
-  color: #4c8d6d;
+  background: #eef2ff;
+  color: #2c2f7e;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1894,8 +1894,8 @@
   width: 42px;
   height: 42px;
   border-radius: 12px;
-  background: #edf5f1;
-  color: #4c8d6d;
+  background: #eef2ff;
+  color: #2c2f7e;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1917,8 +1917,8 @@
 }
 
 .cd-intake-status-chip {
-  background: #edf5f1;
-  color: #4c8d6d;
+  background: #eef2ff;
+  color: #2c2f7e;
   font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
@@ -1946,7 +1946,7 @@
 }
 
 .cd-intake-progress-pct {
-  color: #4c8d6d;
+  color: #2c2f7e;
   font-weight: 700;
 }
 
@@ -1960,7 +1960,7 @@
 
 .cd-intake-progress-bar {
   height: 100%;
-  background: linear-gradient(90deg, #4c8d6d 0%, #3d7559 100%);
+  background: linear-gradient(90deg, #1D2347 0%, #2c2f7e 100%);
   border-radius: 999px;
   transition: width 0.3s ease;
 }
@@ -2040,8 +2040,8 @@
 }
 
 .cd-intake-tile-icon.icon-user {
-  background: #edf5f1;
-  color: #4c8d6d;
+  background: #eef2ff;
+  color: #2c2f7e;
 }
 
 .cd-intake-tile-icon.icon-upload {
@@ -2051,7 +2051,7 @@
 
 .cd-intake-tile-icon.icon-calendar {
   background: #EEF2FF;
-  color: #4c8d6d;
+  color: #2c2f7e;
 }
 
 .cd-intake-tile-text h4 {
@@ -2079,7 +2079,7 @@
   gap: 6px;
   background: none;
   border: none;
-  color: #4c8d6d;
+  color: #2c2f7e;
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
@@ -2088,7 +2088,7 @@
 }
 
 .cd-intake-btn:hover {
-  color: #3d7559;
+  color: #1D2347;
   gap: 8px;
 }
 

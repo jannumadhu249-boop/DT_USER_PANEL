@@ -792,7 +792,7 @@ const MakePayment = () => {
                     <div className="mp-summary-card">
                       <h3 className="mp-summary-title">
                         Order Summary
-                        <BadgeCheck size={22} style={{ color: "#10b981" }} />
+                        <BadgeCheck size={22} style={{ color: "#2c2f7e" }} />
                       </h3>
 
                       <div className="mp-summary-line">
@@ -926,7 +926,7 @@ const MakePayment = () => {
                       <span className="mp-receipt-label">Total Amount Paid</span>
                       <span
                         className="mp-receipt-value"
-                        style={{ color: "#16a34a", fontSize: "1.15rem" }}
+                        style={{ color: "#2c2f7e", fontSize: "1.15rem" }}
                       >
                         {netTotal}.00 USD
                       </span>

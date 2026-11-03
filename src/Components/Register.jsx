@@ -315,7 +315,7 @@ const Register = () => {
           className="col-lg-6 col-xl-7 p-0 d-none d-lg-flex flex-column text-white position-relative"
           style={{
             height: "100vh",
-            background: "linear-gradient(135deg, #4c8d6d 0%, #36674e 100%)",
+            background: "linear-gradient(135deg, #1D2347 0%, #2c2f7e 100%)",
           }}
         >
           <div
@@ -596,7 +596,7 @@ const Register = () => {
                       />
                       <label htmlFor="terms" className="form-check-label" style={{ fontSize: "0.82rem" }}>
                         I agree to the{" "}
-                        <a href="/terms" style={{ color: "#4c8d6d", textDecoration: "none", fontWeight: "600" }}>Terms and Conditions</a>
+                        <a href="/terms" style={{ color: "#2c2f7e", textDecoration: "none", fontWeight: "600" }}>Terms and Conditions</a>
                         <span style={{ color: "#e63946" }}>*</span>
                       </label>
                     </div>
@@ -627,7 +627,7 @@ const Register = () => {
 
                 <p className="text-center mb-0" style={{ fontSize: "0.86rem", color: "#64748b" }}>
                   Already have an account?{" "}
-                  <Link to="/login" style={{ color: "#4c8d6d", textDecoration: "none", fontWeight: "600" }}>Sign In</Link>
+                  <Link to="/login" style={{ color: "#2c2f7e", textDecoration: "none", fontWeight: "600" }}>Sign In</Link>
                 </p>
               </>
             ) : (
@@ -742,9 +742,9 @@ const Register = () => {
                                 height: "50px",
                                 fontSize: "1.25rem",
                                 borderRadius: "8px",
-                                borderColor: digit ? "#4c8d6d" : "#cbd5e1",
+                                borderColor: digit ? "#2c2f7e" : "#cbd5e1",
                                 backgroundColor: digit ? "#f8fafc" : "#fff",
-                                boxShadow: digit ? "0 0 0 2px rgba(76, 141, 109, 0.15)" : "none",
+                                boxShadow: digit ? "0 0 0 2px rgba(44, 47, 126, 0.15)" : "none",
                               }}
                             />
                           ))}
@@ -758,7 +758,7 @@ const Register = () => {
                             <button
                               type="button"
                               className="btn btn-link p-0 text-decoration-none fw-semibold"
-                              style={{ color: "#4c8d6d" }}
+                              style={{ color: "#2c2f7e" }}
                               onClick={() => sendVerificationOtp(verifyEmail)}
                               disabled={verifyOtpLoading}
                             >
@@ -795,7 +795,7 @@ const Register = () => {
 
                 <p className="text-center mb-0" style={{ fontSize: "0.9rem", color: "#64748b" }}>
                   Already verified or prefer to do it later?{" "}
-                  <Link to="/login" style={{ color: "#4c8d6d", textDecoration: "none", fontWeight: "600" }}>
+                  <Link to="/login" style={{ color: "#2c2f7e", textDecoration: "none", fontWeight: "600" }}>
                     Sign In
                   </Link>
                 </p>

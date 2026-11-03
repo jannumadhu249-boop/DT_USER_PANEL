@@ -536,7 +536,7 @@ const ScheduleTaxConsultation = () => {
                           <span
                             style={{
                               backgroundColor: "#e0e7ff",
-                              color: "#2f5c45",
+                              color: "#1D2347",
                               padding: "0.25rem 0.75rem",
                               borderRadius: "20px",
                               fontSize: "0.82rem",

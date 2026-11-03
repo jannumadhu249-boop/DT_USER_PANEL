@@ -50,14 +50,14 @@
 }
 
 .ts-search-input:focus {
-  border-color: #4c8d6d;
-  box-shadow: 0 0 0 3px rgba(76, 141, 109, 0.15);
+  border-color: #2c2f7e;
+  box-shadow: 0 0 0 3px rgba(44, 47, 126, 0.15);
 }
 
 .ts-search-btn {
   height: 40px;
   padding: 0 20px;
-  background: linear-gradient(135deg, #4c8d6d, #3d7559);
+  background: linear-gradient(135deg, #1D2347, #2c2f7e);
   color: #fff;
   border: none;
   border-radius: 10px;
@@ -70,7 +70,7 @@
 }
 
 .ts-search-btn:hover {
-  background: linear-gradient(135deg, #3d7559, #2f5c45);
+  background: linear-gradient(135deg, #2c2f7e, #1D2347);
   opacity: 0.95;
 }
 

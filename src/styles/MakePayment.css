@@ -162,7 +162,7 @@
 }
 
 .mp-step.completed {
-  color: #10b981;
+  color: #2c2f7e;
 }
 
 .mp-step-number {
@@ -186,7 +186,7 @@
 }
 
 .mp-step.completed .mp-step-number {
-  background: #10b981;
+  background: #2c2f7e;
   color: #ffffff;
 }
 
@@ -297,9 +297,9 @@
 }
 
 .mp-filing-info-box.efiling .mp-filing-info-icon-badge {
-  background: #10b981;
+  background: #2c2f7e;
   color: #ffffff;
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+  box-shadow: 0 4px 12px rgba(44, 47, 126, 0.3);
 }
 
 .mp-filing-info-box.paper .mp-filing-info-icon-badge {
@@ -528,7 +528,7 @@
   left: 0;
   right: 0;
   height: 5px;
-  background: linear-gradient(90deg, #10b981 0%, #2563eb 100%);
+  background: linear-gradient(90deg, #2c2f7e 0%, #2563eb 100%);
 }
 
 .mp-summary-title {
@@ -554,7 +554,7 @@
 }
 
 .mp-summary-line.discount {
-  color: #16a34a;
+  color: #2c2f7e;
   font-weight: 700;
   background: #f0fdf4;
   padding: 0.5rem 0.75rem;
@@ -612,7 +612,7 @@
 }
 
 .mp-promo-message.success {
-  color: #16a34a;
+  color: #2c2f7e;
 }
 
 .mp-promo-message.error {
@@ -686,7 +686,7 @@
 }
 
 .mp-guarantee-icon {
-  color: #10b981;
+  color: #2c2f7e;
   flex-shrink: 0;
 }
 
