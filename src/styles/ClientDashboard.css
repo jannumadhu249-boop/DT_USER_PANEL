@@ -19,8 +19,8 @@
   --dt-blue-bg: #EEF2FF;
   --dt-coral: #DC2626;
   --dt-coral-bg: #FEF2F2;
-  --dt-green: #4a5295;
-  --dt-green-bg: #F0FDF4;
+  --dt-purple: #4a5295;
+  --dt-purple-bg: #F0FDF4;
 }
 
 .dt-mono {
@@ -1245,9 +1245,9 @@
   width: fit-content;
 }
 
-.cd-badge-green {
+.cd-badge-purple {
   background: #ECFDF5;
-  color: #059669;
+  color: #2c2f7e;
   border: 1px solid #A7F3D0;
 }
 
@@ -1460,10 +1460,10 @@
 
 /* ── Bottom Grid ──────────────────────────────────────────── */
 .cd-bottom-grid {
-  display: grid;
-  grid-template-columns: 1fr 360px;
+  display: flex;
+  flex-direction: column;
   gap: 20px;
-  align-items: start;
+  width: 100%;
 }
 
 /* Recent Activity */
@@ -1751,7 +1751,7 @@
 
 @media (max-width: 768px) {
   .cd-quick-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr;
   }
 }
 
@@ -2101,8 +2101,8 @@
   white-space: nowrap;
 }
 .dt-pill.done {
-  background: #ECFDF5;
-  color: #059669;
+  /* background: #; */
+  color: #0F172A;
 }
 .dt-pill.not-started {
   background: #FEF3C7;

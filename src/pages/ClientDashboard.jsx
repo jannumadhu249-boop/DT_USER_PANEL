@@ -80,8 +80,6 @@ const ClientDashboard = () => {
   const [pocSuccess, setPocSuccess] = useState("");
   const [pocError, setPocError] = useState("");
   const [isQueryModalOpen, setIsQueryModalOpen] = useState(false);
-  const [isEditingGuidance, setIsEditingGuidance] = useState(false);
-  const [guidanceContent, setGuidanceContent] = useState("");
 
   const navigate = useNavigate();
 
@@ -147,20 +145,6 @@ const ClientDashboard = () => {
       window.removeEventListener("resize", handleResize);
     };
   }, [navigate]);
-
-  // Load initial guidance content from localStorage or dashboard data
-  useEffect(() => {
-    const savedContent = localStorage.getItem("client_dashboard_guidance_content");
-    if (savedContent) {
-      setGuidanceContent(savedContent);
-    } else if (dashboardData) {
-      const dashboardContent = dashboardData?.dashboard_content || dashboardData?.dashboardContent;
-      const overviewBodyLocal = dashboardContent?.page_title || dashboardContent?.description || "";
-      if (overviewBodyLocal) {
-        setGuidanceContent(overviewBodyLocal);
-      }
-    }
-  }, [dashboardData]);
 
   if (!user) return null;
 
@@ -256,7 +240,30 @@ const ClientDashboard = () => {
     return found?.status || fallback;
   };
   const basicInfoStatus = getIntakeStatus("basic_information", dashboardData?.intake?.basic_information?.status || "Complete");
-  const documentsStatus = getIntakeStatus("documents", dashboardData?.intake?.documents?.status || "");
+  // Resolve documents upload status — check API intake steps first, then infer from upload data
+  const documentsStatusRaw = getIntakeStatus(
+    "documents",
+    dashboardData?.intake?.documents?.status ||
+    dashboardData?.intake?.document_uploads?.status ||
+    ""
+  );
+  const documentsHaveUploads = (() => {
+    const uploadArr =
+      dashboardData?.documents ||
+      dashboardData?.uploaded_documents ||
+      dashboardData?.document_uploads ||
+      dashboardData?.files ||
+      cards?.documents?.files ||
+      null;
+    if (Array.isArray(uploadArr) && uploadArr.length > 0) return true;
+    const uploadObj = dashboardData?.documents_summary || dashboardData?.upload_summary || cards?.documents;
+    if (uploadObj && typeof uploadObj === "object" && !Array.isArray(uploadObj)) {
+      const count = uploadObj.count ?? uploadObj.total ?? uploadObj.uploaded ?? uploadObj.files_count ?? 0;
+      if (Number(count) > 0) return true;
+    }
+    return false;
+  })();
+  const documentsStatus = documentsStatusRaw || (documentsHaveUploads ? "Complete" : "");
   const consultationStatus = getIntakeStatus("consultation", dashboardData?.intake?.consultation?.status || "Not started");
 
   const completedIntakeCount = [basicInfoStatus, documentsStatus, consultationStatus].filter(
@@ -387,26 +394,6 @@ const ClientDashboard = () => {
     } finally {
       setPocSending(false);
     }
-  };
-
-  // CKEditor handlers for Overview & Guidelines
-  const handleSaveGuidance = () => {
-    localStorage.setItem("client_dashboard_guidance_content", guidanceContent);
-    setIsEditingGuidance(false);
-    alert("Guidance content saved successfully!");
-  };
-
-  const handleCancelEdit = () => {
-    const savedContent = localStorage.getItem("client_dashboard_guidance_content");
-    const dashboardContent = dashboardData?.dashboard_content || dashboardData?.dashboardContent;
-    const overviewBodyLocal = dashboardContent?.page_title || dashboardContent?.description || "";
-    
-    if (savedContent) {
-      setGuidanceContent(savedContent);
-    } else if (overviewBodyLocal) {
-      setGuidanceContent(overviewBodyLocal);
-    }
-    setIsEditingGuidance(false);
   };
 
   const ActivityIcon = ({ type }) => {
@@ -592,7 +579,7 @@ const ClientDashboard = () => {
             </div> */}
 
             {/* ── Overview & Guidelines (image + dashboard content in one card) ── */}
-            {(canShowOverviewImage || overviewBody || guidanceContent) && (
+            {(canShowOverviewImage || overviewBody) && (
               <div className="cd-overview-panel">
                 <div className="cd-overview-head">
                   <div className="cd-overview-icon-title">
@@ -663,19 +650,19 @@ const ClientDashboard = () => {
                   </div>
                 )} */}
 
-                {!isEditingGuidance && (
+                {(
                   <>
                     <div className="cd-overview-unified">
                       {canShowOverviewImage && (
                         <OverviewBannerImg imagePath={overviewImage} />
                       )}
-                      {guidanceContent && (
+                      {/* {guidanceContent && (
                         <div 
                           className="cd-overview-body"
                           dangerouslySetInnerHTML={{ __html: guidanceContent }}
                         />
-                      )}
-                      {!guidanceContent && overviewBody && (
+                      )} */}
+                      {overviewBody && (
                         <p className="cd-overview-body">{overviewBody}</p>
                       )}
                     </div>

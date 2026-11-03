@@ -7,7 +7,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { useNavigate } from "react-router-dom";
 import { URLS } from "../url";
 import "../styles/Dashboard.css";
-import { Pencil, Trash2, Plus, X, CheckCircle, XCircle, Calendar, MapPin, User } from "lucide-react";
+import { Pencil, Trash2, Plus, X, CheckCircle, XCircle, Calendar, MapPin, User, Users2 } from "lucide-react";
 
 /* ─── helpers ─────────────────────────────────────────────────── */
 const toDate = (iso) => (iso ? new Date(iso) : null);
@@ -321,6 +321,39 @@ const AddressInTaxYear = () => {
         </div>
 
         <div className="form-container">
+          <div className="page-header-section">
+            <div className="page-header-left">
+              <div className="page-header-icon">
+                <MapPin size={24} />
+              </div>
+              <div className="page-header-content">
+                <h2 className="page-header-title">Address In Tax Year</h2>
+                <p className="page-header-subtitle">Provide the states where the taxpayer and spouse lived during the tax year.</p>
+              </div>
+            </div>
+            <div className="page-header-tabs">
+              <div className="step-tab" onClick={() => navigate("/dashboard/basic-info/taxpayer")} style={{ cursor: "pointer" }}>
+                <div className="step-tab-circle">1</div>
+                <div className="step-tab-label">Taxpayer</div>
+              </div>
+              <div className="step-tab" onClick={() => navigate("/spouse")} style={{ cursor: "pointer" }}>
+                <div className="step-tab-circle">2</div>
+                <div className="step-tab-label">Spouse</div>
+              </div>
+              <div className="step-tab" onClick={() => navigate("/dependent")} style={{ cursor: "pointer" }}>
+                <div className="step-tab-circle">3</div>
+                <div className="step-tab-label">Dependent</div>
+              </div>
+              <div className="step-tab active" onClick={() => navigate("/address-in-tax-year")} style={{ cursor: "pointer" }}>
+                <div className="step-tab-circle">4</div>
+                <div className="step-tab-label">Address</div>
+              </div>
+              <div className="step-tab" onClick={() => navigate("/bank-details")} style={{ cursor: "pointer" }}>
+                <div className="step-tab-circle">5</div>
+                <div className="step-tab-label">Bank Details</div>
+              </div>
+            </div>
+          </div>
           {listLoading ? (
             <div className="form-card">
               <div className="text-center py-4">

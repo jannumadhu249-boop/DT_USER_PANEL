@@ -35,6 +35,12 @@ function App() {
         <Route path="/client-dashboard" element={<ClientDashboard />} />
         <Route path="/dashboard-legacy" element={<Dashboard />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/taxpayer" element={<Taxpayer />} />
+        <Route path="/spouse" element={<Spouse />} />
+        <Route path="/dependent" element={<Dependent />} />
+        <Route path="/address-in-tax-year" element={<AddressInTaxYear />} />
+        <Route path="/bank-details" element={<BankDetails />} />
+        {/* Legacy routes for backward compatibility */}
         <Route path="/dashboard/basic-info/taxpayer" element={<Taxpayer />} />
         <Route path="/dashboard/basic-info/spouse" element={<Spouse />} />
         <Route path="/dashboard/basic-info/dependent" element={<Dependent />} />

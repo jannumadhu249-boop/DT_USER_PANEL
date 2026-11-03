@@ -350,7 +350,7 @@ const Login = () => {
       style={{ overflowX: "hidden", backgroundColor: "#ffffff" }}
     >
       <div className="row g-0 w-100 min-vh-100">
-        {/* Left Side – Colored with brand #4c8d6d */}
+        {/* Left Side – Colored with brand sidebar theme */}
         <div
           className="col-lg-6 col-xl-7 p-0 d-none d-lg-flex flex-column text-white position-relative"
           style={{

@@ -191,7 +191,7 @@ const SendQueryModal = ({ isOpen, onClose, onSuccess }) => {
             <button
               type="submit"
               style={{
-                background: "#5cb389",
+                background: "#2c2f7e",
                 border: "none",
                 color: "#ffffff",
                 borderRadius: "8px",

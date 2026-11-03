@@ -5,7 +5,7 @@ import Footer from "../Components/Footer";
 import { useNavigate } from "react-router-dom";
 import { URLS } from "../url";
 import "../styles/Dashboard.css";
-import { CheckCircle, XCircle, X, Building2, Hash, User, CreditCard } from "lucide-react";
+import { CheckCircle, XCircle, X, Building2, Hash, User, CreditCard, Users2 } from "lucide-react";
 
 const BankDetails = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -224,6 +224,39 @@ const BankDetails = () => {
         </div>
 
         <div className="form-container">
+          <div className="page-header-section">
+            <div className="page-header-left">
+              <div className="page-header-icon">
+                <Users2 size={24} />
+              </div>
+              <div className="page-header-content">
+                <h2 className="page-header-title">Bank Details</h2>
+                <p className="page-header-subtitle">Provide your bank account details for tax refund direct deposit.</p>
+              </div>
+            </div>
+            <div className="page-header-tabs">
+              <div className="step-tab" onClick={() => navigate("/dashboard/basic-info/taxpayer")} style={{ cursor: "pointer" }}>
+                <div className="step-tab-circle">1</div>
+                <div className="step-tab-label">Taxpayer</div>
+              </div>
+              <div className="step-tab" onClick={() => navigate("/spouse")} style={{ cursor: "pointer" }}>
+                <div className="step-tab-circle">2</div>
+                <div className="step-tab-label">Spouse</div>
+              </div>
+              <div className="step-tab" onClick={() => navigate("/dependent")} style={{ cursor: "pointer" }}>
+                <div className="step-tab-circle">3</div>
+                <div className="step-tab-label">Dependent</div>
+              </div>
+              <div className="step-tab" onClick={() => navigate("/address-in-tax-year")} style={{ cursor: "pointer" }}>
+                <div className="step-tab-circle">4</div>
+                <div className="step-tab-label">Address</div>
+              </div>
+              <div className="step-tab active" onClick={() => navigate("/bank-details")} style={{ cursor: "pointer" }}>
+                <div className="step-tab-circle">5</div>
+                <div className="step-tab-label">Bank Details</div>
+              </div>
+            </div>
+          </div>
           <div className="form-card">
             <h3 className="form-title">Bank Details</h3>
 

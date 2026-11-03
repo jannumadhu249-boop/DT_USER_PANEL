@@ -432,7 +432,7 @@ const Profile = () => {
 
               {/* 2x2 Grid of Modern Fields */}
               <div className="row g-3 g-md-4">
-                {/* 1. Full name (Mint / Teal Green Theme) */}
+                {/* 1. Full name (Sidebar Theme) */}
                 <div className="col-12 col-md-6">
                   <div
                     className="p-3 d-flex align-items-center justify-content-between h-100"
