@@ -1,0 +1,233 @@
+/*
+ * CKEditor 5 Content Styles — User Dashboard Renderer
+ * Renders all formatting produced by CKEditor 5 in the Admin dashboard:
+ * headings, alignment, bold/italic/underline, font size/family/color,
+ * background color, lists, links, blockquotes, tables.
+ *
+ * Scoped under .ck-content-view to avoid polluting global styles.
+ */
+
+/* ── Scope wrapper ────────────────────────────────────────────── */
+.ck-content-view {
+  font-family: inherit;
+  font-size: 15px;
+  line-height: 1.7;
+  color: #1e293b;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* ── Paragraphs ───────────────────────────────────────────────── */
+.ck-content-view p {
+  margin: 0 0 0.85em;
+}
+.ck-content-view p:last-child {
+  margin-bottom: 0;
+}
+
+/* ── Headings ─────────────────────────────────────────────────── */
+.ck-content-view h1,
+.ck-content-view h2,
+.ck-content-view h3,
+.ck-content-view h4,
+.ck-content-view h5,
+.ck-content-view h6 {
+  margin: 1em 0 0.4em;
+  font-weight: 700;
+  line-height: 1.25;
+  color: #0f172a;
+}
+.ck-content-view h1 { font-size: 2em; }
+.ck-content-view h2 { font-size: 1.6em; }
+.ck-content-view h3 { font-size: 1.3em; }
+.ck-content-view h4 { font-size: 1.1em; }
+.ck-content-view h5 { font-size: 1em; }
+.ck-content-view h6 { font-size: 0.9em; }
+
+/* ── Inline formatting ────────────────────────────────────────── */
+.ck-content-view strong,
+.ck-content-view b    { font-weight: 700; }
+.ck-content-view em,
+.ck-content-view i    { font-style: italic; }
+.ck-content-view u    { text-decoration: underline; }
+.ck-content-view s,
+.ck-content-view del,
+.ck-content-view strike { text-decoration: line-through; }
+
+/* ── Text alignment (CKEditor 5 Alignment plugin classes & inline styles) ─────── */
+.ck-content-view .ck-align-left,
+.ck-content-view [style*="text-align:left"],
+.ck-content-view [style*="text-align: left"]    { text-align: left !important; }
+
+.ck-content-view .ck-align-center,
+.ck-content-view [style*="text-align:center"],
+.ck-content-view [style*="text-align: center"]  { text-align: center !important; }
+
+.ck-content-view .ck-align-right,
+.ck-content-view [style*="text-align:right"],
+.ck-content-view [style*="text-align: right"]   { text-align: right !important; }
+
+.ck-content-view .ck-align-justify,
+.ck-content-view [style*="text-align:justify"],
+.ck-content-view [style*="text-align: justify"] { text-align: justify !important; }
+
+/* CKEditor 5 data-ck-alignment attribute */
+.ck-content-view [data-ck-alignment="center"] { text-align: center !important; }
+.ck-content-view [data-ck-alignment="right"]  { text-align: right !important; }
+.ck-content-view [data-ck-alignment="justify"]{ text-align: justify !important; }
+.ck-content-view [data-ck-alignment="left"]   { text-align: left !important; }
+
+/* In case alignment is placed on an inline element like <span> */
+.ck-content-view span[style*="text-align"],
+.ck-content-view span.ck-align-center,
+.ck-content-view span.ck-align-right,
+.ck-content-view span.ck-align-justify {
+  display: block;
+}
+
+/* ── Font size classes (CKEditor 5 FontSize plugin) ──────────── */
+.ck-content-view .text-tiny   { font-size: 0.7em !important; }
+.ck-content-view .text-small  { font-size: 0.85em !important; }
+.ck-content-view .text-big    { font-size: 1.3em !important; }
+.ck-content-view .text-huge   { font-size: 1.8em !important; }
+
+/* Inline font size / font family / color styles are preserved automatically
+   because DOMPurify keeps style attributes we explicitly allow. */
+
+/* ── Lists ────────────────────────────────────────────────────── */
+.ck-content-view ul,
+.ck-content-view ol {
+  margin: 0.5em 0 0.85em 0 !important;
+  padding-left: 2em !important;
+}
+.ck-content-view li {
+  display: list-item !important;
+  margin-bottom: 0.3em;
+  line-height: 1.65;
+}
+.ck-content-view ul { list-style-type: disc !important; }
+.ck-content-view ul ul { list-style-type: circle !important; }
+.ck-content-view ul ul ul { list-style-type: square !important; }
+.ck-content-view ol { list-style-type: decimal !important; }
+.ck-content-view ol ol { list-style-type: lower-alpha !important; }
+.ck-content-view ol ol ol { list-style-type: lower-roman !important; }
+
+/* ── Links ────────────────────────────────────────────────────── */
+.ck-content-view a {
+  color: #4c8d6d;
+  text-decoration: underline;
+  word-break: break-all;
+  transition: color 0.15s;
+}
+.ck-content-view a:hover {
+  color: #3d7559;
+}
+
+/* ── Blockquote ───────────────────────────────────────────────── */
+.ck-content-view blockquote {
+  margin: 0.75em 0;
+  padding: 10px 16px;
+  border-left: 4px solid #4c8d6d;
+  background: #f0f7f4;
+  color: #334155;
+  border-radius: 0 6px 6px 0;
+  font-style: italic;
+}
+.ck-content-view blockquote p {
+  margin: 0;
+}
+
+/* ── Tables ───────────────────────────────────────────────────── */
+.ck-content-view .table {
+  margin: 1em 0;
+  overflow-x: auto;
+  display: block;
+}
+.ck-content-view table {
+  border-collapse: collapse;
+  width: 100%;
+  min-width: 300px;
+  font-size: 0.93em;
+}
+.ck-content-view th,
+.ck-content-view td {
+  border: 1px solid #cbd5e1;
+  padding: 8px 12px;
+  vertical-align: top;
+  text-align: left;
+}
+.ck-content-view th {
+  background: #f1f5f9;
+  font-weight: 600;
+  color: #0f172a;
+}
+.ck-content-view tr:nth-child(even) td {
+  background: #f8fafc;
+}
+/* CKEditor table borders (when user applies them) */
+.ck-content-view .table > table {
+  border: 1px double #b0bec5;
+}
+
+/* ── Images ───────────────────────────────────────────────────── */
+.ck-content-view img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 6px;
+  margin: 0.5em auto;
+}
+.ck-content-view figure.image {
+  margin: 1em 0;
+  text-align: center;
+}
+.ck-content-view figure.image figcaption {
+  font-size: 0.82em;
+  color: #64748b;
+  margin-top: 4px;
+}
+
+/* ── Code / pre ───────────────────────────────────────────────── */
+.ck-content-view pre {
+  background: #1e293b;
+  color: #e2e8f0;
+  padding: 14px 18px;
+  border-radius: 8px;
+  overflow-x: auto;
+  font-size: 0.88em;
+  line-height: 1.5;
+  margin: 0.75em 0;
+}
+.ck-content-view code {
+  background: #f1f5f9;
+  padding: 2px 5px;
+  border-radius: 4px;
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 0.88em;
+  color: #be123c;
+}
+.ck-content-view pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  border-radius: 0;
+  font-size: inherit;
+}
+
+/* ── Horizontal rule ─────────────────────────────────────────── */
+.ck-content-view hr {
+  border: none;
+  border-top: 2px solid #e2e8f0;
+  margin: 1.25em 0;
+}
+
+/* ── Responsive ───────────────────────────────────────────────── */
+@media (max-width: 540px) {
+  .ck-content-view {
+    font-size: 14px;
+  }
+  .ck-content-view h1 { font-size: 1.6em; }
+  .ck-content-view h2 { font-size: 1.35em; }
+  .ck-content-view h3 { font-size: 1.15em; }
+}
+

@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useMemo, useContext, useCallback, useRef, useLayoutEffect } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
+import DOMPurify from "dompurify";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../Components/Sidebar";
 import Header from "../Components/Header";
@@ -35,7 +36,54 @@ import { URLS } from "../url";
 import WelcomeModal from "../Components/WelcomeModal";
 import "../styles/Dashboard.css";
 import "../styles/ClientDashboard.css";
+import "../styles/ck-content.css";
 import SendQueryModal from "../Components/SendQueryModal";
+
+// ── DOMPurify configuration ─────────────────────────────────────────────
+// Allow all standard HTML tags, inline styles, alignments, fonts, lists, tables,
+// and safe attributes produced by CKEditor 5 in the Admin Dashboard.
+const PURIFY_CONFIG = {
+  USE_PROFILES: { html: true },
+  ADD_TAGS: ["colgroup", "col", "figure", "figcaption", "mark", "u", "s", "strike"],
+  ADD_ATTR: [
+    "target",
+    "rel",
+    "data-ck-alignment",
+    "style",
+    "class",
+    "align",
+    "dir",
+    "title",
+    "border",
+    "cellpadding",
+    "cellspacing",
+    "colspan",
+    "rowspan",
+    "width",
+    "height",
+  ],
+  ALLOW_DATA_ATTR: true,
+};
+
+/**
+ * Sanitize CKEditor HTML and return safe markup.
+ * Also detects if the content is plain text (no HTML tags) and wraps it in a <p>.
+ */
+function sanitizeCkHtml(html) {
+  if (!html || typeof html !== "string") return "";
+  const trimmed = html.trim();
+  if (!trimmed) return "";
+  try {
+    const raw = !/<[a-z][\s\S]*>/i.test(trimmed) ? `<p>${trimmed}</p>` : trimmed;
+    if (typeof DOMPurify?.sanitize === "function") {
+      return DOMPurify.sanitize(raw, PURIFY_CONFIG);
+    }
+    return raw;
+  } catch (err) {
+    console.error("DOMPurify sanitization error:", err);
+    return trimmed;
+  }
+}
 
 // Banner image component — tries all candidate URLs with fallback
 const OverviewBannerImg = ({ imagePath }) => {
@@ -279,15 +327,35 @@ const ClientDashboard = () => {
     return "dt-pill not-started";
   };
 
-  // Overview content from API — page_title is the primary text field in the backend
+  // ── Overview content from API ─────────────────────────────────────────
+  // The Admin CKEditor saves full HTML to the `page_title` field.
+  // We try every known field path so we don't miss newly-added backend shapes.
   const dashboardContent = dashboardData?.dashboard_content || dashboardData?.dashboardContent;
-  const overviewBody =
-    dashboardContent?.page_title ||
-    dashboardContent?.description ||
-    dashboardContent?.welcome_text ||
-    dashboardContent?.body ||
-    dashboardContent?.content ||
-    "";
+
+  // Pick the first non-empty HTML/text value across all candidate field paths.
+  const overviewBody = (() => {
+    const candidates = [
+      dashboardContent?.page_title,
+      dashboardContent?.description,
+      dashboardContent?.welcome_text,
+      dashboardContent?.body,
+      dashboardContent?.content,
+      dashboardContent?.html,
+      dashboardContent?.text,
+      // Top-level fallbacks (some backends hoist these)
+      dashboardData?.page_title,
+      dashboardData?.description,
+      dashboardData?.content,
+      dashboardData?.body,
+    ];
+    for (const c of candidates) {
+      if (c && typeof c === "string" && c.trim()) return c.trim();
+    }
+    return "";
+  })();
+
+  // Sanitized HTML ready for dangerouslySetInnerHTML
+  const overviewBodyHtml = sanitizeCkHtml(overviewBody);
 
   // Overview image — check all API paths the backend might use
   const pickImagePath = (v) => {
@@ -352,17 +420,84 @@ const ClientDashboard = () => {
 
   const canShowOverviewImage = Boolean(overviewImage && !shouldHideOverviewImage);
 
-  const journeySteps = [
-    { label: "Client info", sublabel: "Completed" },
-    { label: "Documents", sublabel: "Scheduled" },
-    { label: "Tax Preparation", sublabel: "Complete" },
-    { label: "Client Review", sublabel: "Complete" },
-    { label: "Return Filed", sublabel: "Completed" },
-    { label: "IRS Acceptance", sublabel: "Verified Accepted" },
-  ];
+  // ── Tax Year 2026 Journey Steps: Dynamic Status Determination ─────────
+  const currentStage = currentStatusInfo?.stage != null ? Number(currentStatusInfo.stage) : 0;
+  const isFilingComplete = Boolean(
+    irsAccepted ||
+    fileStatusCode === "EFA_FC" ||
+    fileStatusCode === "PF_D" ||
+    (displayStatus || "").toLowerCase().includes("accepted") ||
+    (displayStatus || "").toLowerCase().includes("filing complete")
+  );
 
-  const isStepDone = (idx) => graphProgress > idx;
-  const isStepCurrent = (idx) => Math.floor(graphProgress) === idx;
+  const isReturnSubmitted = Boolean(
+    isFilingComplete ||
+    fileStatusCode === "EF_AA_I" ||
+    fileStatusCode === "EF_AA_II" ||
+    fileStatusCode === "EF_REJ" ||
+    currentStage >= 5
+  );
+
+  // Milestone completion evaluation for the 6 stages:
+  // Step 0 - Client info: completed if intake stage passed OR basic info complete
+  const isStep0Done = Boolean(
+    isFilingComplete ||
+    currentStage > 0 ||
+    basicInfoStatus?.toLowerCase() === "complete" ||
+    basicInfoStatus?.toLowerCase() === "completed" ||
+    basicInfoStatus?.toLowerCase() === "done"
+  );
+
+  // Step 1 - Documents: completed if stage > 1 OR documents are uploaded / marked complete
+  const isStep1Done = Boolean(
+    isFilingComplete ||
+    currentStage > 1 ||
+    documentsStatus?.toLowerCase() === "complete" ||
+    documentsStatus?.toLowerCase() === "completed" ||
+    documentsStatus?.toLowerCase() === "done" ||
+    documentsHaveUploads
+  );
+
+  // Step 2 - Tax Preparation: completed if stage > 2 (Review, Filing, or Acceptance)
+  const isStep2Done = Boolean(isFilingComplete || currentStage > 2);
+
+  // Step 3 - Client Review: completed if stage > 3 (Filing or Acceptance)
+  const isStep3Done = Boolean(isFilingComplete || currentStage > 3);
+
+  // Step 4 - Return Filed: completed if return has been submitted/filed or IRS accepted
+  const isStep4Done = Boolean(isFilingComplete || isReturnSubmitted || currentStage > 4);
+
+  // Step 5 - IRS Acceptance: completed when IRS has accepted filing / filing is complete
+  const isStep5Done = Boolean(isFilingComplete);
+
+  const rawStepDoneStates = [isStep0Done, isStep1Done, isStep2Done, isStep3Done, isStep4Done, isStep5Done];
+
+  // The first uncompleted step is current (active); if all are complete, none are active
+  const firstUnfinishedIdx = isFilingComplete ? -1 : rawStepDoneStates.findIndex((d) => !d);
+
+  const journeySteps = [
+    { label: "Client info" },
+    { label: "Documents" },
+    { label: "Tax Preparation" },
+    { label: "Client Review" },
+    { label: "Return Filed" },
+    { label: "IRS Acceptance" },
+  ].map((step, idx) => {
+    const done = rawStepDoneStates[idx];
+    const active = idx === firstUnfinishedIdx;
+
+    let statusText = "";
+    if (done) {
+      statusText = idx === 4 ? "Submitted" : "Completed";
+    }
+
+    return {
+      ...step,
+      done,
+      active,
+      statusText,
+    };
+  });
 
   const emailVerified = isEmailVerified(user);
 
@@ -547,36 +682,7 @@ const ClientDashboard = () => {
               </div>
             </div>
 
-              {/* ── Tax Return Journey ────────────────────────── */}
-            {/* <div className="cd-journey-panel">
-              <div className="cd-journey-header">
-                <div>
-                  <h2 className="cd-journey-title">Tax Year 2026</h2>
-                  <p className="cd-joureny-sub">Filing Progress & Workflow</p>
-                </div>
-                <div className="cd-journey-status-badge">Status: {displayStatus}</div>
-              </div>
 
-              <div className="cd-stepper">
-                {journeySteps.map((step, idx) => {
-                  const done = isStepDone(idx);
-                  const active = isStepCurrent(idx);
-                  const isLast = idx === journeySteps.length - 1;
-                  return (
-                    <React.Fragment key={idx}>
-                      <div className="cd-step">
-                        <div className={`cd-step-circle ${done ? "cd-step-done" : active ? "cd-step-active" : ""}`}>
-                          {done ? <Check size={18} strokeWidth={3} /> : <StepIcon idx={idx} />}
-                        </div>
-                        <span className={`cd-step-label ${active ? "cd-step-label-active" : ""}`}>{step.label}</span>
-                        {active && <span className="cd-step-sublabel">{step.sublabel}</span>}
-                      </div>
-                      {!isLast && <div className={`cd-step-line ${done ? "cd-step-line-done" : ""}`} />}
-                    </React.Fragment>
-                  );
-                })}
-              </div>
-            </div> */}
 
             {/* ── Overview & Guidelines (image + dashboard content in one card) ── */}
             {(canShowOverviewImage || overviewBody) && (
@@ -662,8 +768,11 @@ const ClientDashboard = () => {
                           dangerouslySetInnerHTML={{ __html: guidanceContent }}
                         />
                       )} */}
-                      {overviewBody && (
-                        <p className="cd-overview-body">{overviewBody}</p>
+                      {overviewBodyHtml && (
+                        <div
+                          className="cd-overview-body ck-content-view"
+                          dangerouslySetInnerHTML={{ __html: overviewBodyHtml }}
+                        />
                       )}
                     </div>
                   </>
@@ -810,26 +919,46 @@ const ClientDashboard = () => {
               <div className="cd-journey-header">
                 <div>
                   <h2 className="cd-journey-title">Tax Year 2026</h2>
-                  <p className="cd-journey-sub">Filing Progress & Wrokflow</p>
+                  <p className="cd-journey-sub">Filing Progress &amp; Workflow</p>
                 </div>
                 <div className="cd-journey-status-badge">Status: {displayStatus}</div>
               </div>
 
               <div className="cd-stepper">
                 {journeySteps.map((step, idx) => {
-                  const done = isStepDone(idx);
-                  const active = isStepCurrent(idx);
                   const isLast = idx === journeySteps.length - 1;
                   return (
                     <React.Fragment key={idx}>
                       <div className="cd-step">
-                        <div className={`cd-step-circle ${done ? "cd-step-done" : active ? "cd-step-active" : ""}`}>
-                          {done ? <Check size={18} strokeWidth={3} /> : <StepIcon idx={idx} />}
+                        <div
+                          className={`cd-step-circle ${
+                            step.done ? "cd-step-done" : step.active ? "cd-step-active" : ""
+                          }`}
+                        >
+                          {step.done ? <Check size={18} strokeWidth={3} /> : <StepIcon idx={idx} />}
                         </div>
-                        <span className={`cd-step-label ${active ? "cd-step-label-active" : ""}`}>{step.label}</span>
-                        {active && <span className="cd-step-sublabel">{step.sublabel}</span>}
+                        <span
+                          className={`cd-step-label ${
+                            step.active
+                              ? "cd-step-label-active"
+                              : step.done
+                              ? "cd-step-label-done"
+                              : ""
+                          }`}
+                        >
+                          {step.label}
+                        </span>
+                        {(step.done || step.active) && (
+                          <span className="cd-step-sublabel cd-sublabel-completed">
+                            {step.statusText || (step.active ? (idx === 4 ? "Submitted" : "Completed") : "")}
+                          </span>
+                        )}
                       </div>
-                      {!isLast && <div className={`cd-step-line ${done ? "cd-step-line-done" : ""}`} />}
+                      {!isLast && (
+                        <div
+                          className={`cd-step-line ${step.done ? "cd-step-line-done" : ""}`}
+                        />
+                      )}
                     </React.Fragment>
                   );
                 })}

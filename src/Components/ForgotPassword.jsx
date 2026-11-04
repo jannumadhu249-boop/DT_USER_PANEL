@@ -367,17 +367,41 @@ const ForgotPassword = () => {
       style={{ overflowX: "hidden", backgroundColor: "#ffffff" }}
     >
       <div className="row g-0 w-100 min-vh-100">
-        {/* Left Side – Colored with brand sidebar colors */}
+        {/* Left Side – Blurred Banner with Content on Top */}
         <div
-          className="col-lg-6 col-xl-7 p-0 d-none d-lg-flex flex-column text-white position-relative"
+          className="col-lg-6 col-xl-7 p-0 d-none d-lg-flex flex-column text-white position-relative overflow-hidden"
           style={{
             minHeight: "100vh",
-            background: "linear-gradient(135deg, #1D2347 0%, #2c2f7e 100%)",
+            /* background: "linear-gradient(135deg, #1D2347 0%, #2c2f7e 100%)", */
+            backgroundColor: "#0f172a",
           }}
         >
+          {/* Blurred Background Image */}
+          <div
+            className="position-absolute top-0 start-0 w-100 h-100"
+            style={{
+              backgroundImage: "url('/images/DT_Banner_img.png')",
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              filter: "blur(3px)",
+              transform: "scale(1.08)",
+              zIndex: 0,
+            }}
+          />
+
+          {/* Dark Overlay for Text Readability */}
+          <div
+            className="position-absolute top-0 start-0 w-100 h-100"
+            style={{
+              background: "linear-gradient(135deg, rgba(15, 23, 42, 0.75) 0%, rgba(29, 35, 71, 0.82) 100%)",
+              zIndex: 1,
+            }}
+          />
+
+          {/* Foreground Content */}
           <div
             className="h-100 d-flex flex-column justify-content-center align-items-start text-white text-start p-5 p-xl-5 position-relative"
-            style={{ flex: 1 }}
+            style={{ flex: 1, zIndex: 2 }}
           >
             <div
               className="position-relative d-flex flex-column align-items-start text-start"
