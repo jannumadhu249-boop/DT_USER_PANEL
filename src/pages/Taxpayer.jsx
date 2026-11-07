@@ -352,6 +352,10 @@ const Taxpayer = () => {
       const resData = await response.json();
       if (resData.success) {
         setSuccessMsg(resData.message || "Taxpayer details saved successfully.");
+        try {
+          localStorage.setItem("taxpayer_completed", "true");
+          window.dispatchEvent(new Event("user-updated"));
+        } catch (_) {}
         // Navigate to Spouse tab after successful save
         setTimeout(() => {
           navigate("/spouse");
@@ -719,16 +723,7 @@ const Taxpayer = () => {
                       </select>
                     </div>
                   </div>
-                </div>
-              </div>
 
-              {/* CARD 2: Contact Details */}
-              <div className="form-card" style={{ marginBottom: "1.5rem" }}>
-                <h3 className="form-title">
-                  <Mail size={20} />
-                  Contact Information
-                </h3>
-                <div className="form-grid">
                   <div className="form-group">
                     <label>
                       Filing Status <span style={{ color: "red" }}>*</span>
@@ -756,6 +751,43 @@ const Taxpayer = () => {
                       </select>
                     </div>
                   </div>
+                </div>
+              </div>
+
+              {/* CARD 2: Contact Details */}
+              <div className="form-card" style={{ marginBottom: "1.5rem" }}>
+                <h3 className="form-title">
+                  <Mail size={20} />
+                  Contact Information
+                </h3>
+                <div className="form-grid">
+                  {/* <div className="form-group">
+                    <label>
+                      Filing Status <span style={{ color: "red" }}>*</span>
+                    </label>
+                    <div className="input-icon-wrap">
+                      <span className="input-icon"><Heart size={18} /></span>
+                      <select
+                        className="form-control"
+                        name="filing_status"
+                        value={formData.filing_status}
+                        onChange={handleChange}
+                        style={{ paddingLeft: "42px" }}
+                      >
+                        {!filingOptions.includes(formData.filing_status) &&
+                          formData.filing_status && (
+                            <option value={formData.filing_status}>
+                              {formData.filing_status}
+                            </option>
+                          )}
+                        {filingOptions.map((opt) => (
+                          <option key={opt} value={opt}>
+                            {opt}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div> */}
 
                   {showMarriageDate && (
                     <div className="form-group">

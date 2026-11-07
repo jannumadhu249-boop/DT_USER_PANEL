@@ -519,7 +519,7 @@ const Register = () => {
                     </label>
                     <div className="row g-2">
                       {/* Time Zone */}
-                      <div className="col-md-4 col-12">
+                      <div className="col-md-3 col-12">
                         <select
                           name="time_zone"
                           className="form-select"
@@ -528,12 +528,12 @@ const Register = () => {
                           style={{ padding: "8px 10px", fontSize: "0.84rem" }}
                           required
                         >
-                          <option value="America/New_York">Eastern (US)</option>
-                          <option value="America/Chicago">Central (US)</option>
-                          <option value="America/Denver">Mountain (US)</option>
-                          <option value="America/Los_Angeles">Pacific (US)</option>
-                          <option value="Asia/Kolkata">IST (India)</option>
-                          <option value="UTC">UTC</option>
+                          <option value="America/New_York">EST</option>
+                          <option value="America/Chicago">CST</option>
+                          <option value="America/Denver">MST</option>
+                          <option value="America/Los_Angeles">PST</option>
+                          <option value="Asia/Kolkata">IST</option>
+                          {/* <option value="UTC">UTC</option> */}
                         </select>
                       </div>
                       {/* Country Code */}
@@ -549,11 +549,12 @@ const Register = () => {
                           <option value="+1">🇺🇸 +1</option>
                           <option value="+91">🇮🇳 +91</option>
                           <option value="+61">🇦🇺 +61</option>
-                          <option value="+44">🇬🇧 +44</option>
+                          <option value="+44">uk +44</option>
+                          <option value="+86">china +86</option>
                         </select>
                       </div>
                       {/* Phone Number */}
-                      <div className="col-md-5 col-7">
+                      <div className="col-md-6 col-7">
                         <input
                           type="tel"
                           name="contact_number"

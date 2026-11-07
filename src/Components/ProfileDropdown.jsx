@@ -46,7 +46,8 @@ const ProfileDropdown = () => {
           navigate('/login');
           return;
         }
-        throw new Error(`HTTP ${res.status}`);
+        setUser(getStoredUser());
+        return;
       }
 
       const result = await res.json();

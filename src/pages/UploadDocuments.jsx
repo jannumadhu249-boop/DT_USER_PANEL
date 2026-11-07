@@ -216,6 +216,10 @@ const UploadDocuments = () => {
 
       if (data.success) {
         setSuccessMsg(data.message || "Document uploaded successfully!");
+        try {
+          localStorage.setItem("documents_completed", "true");
+          window.dispatchEvent(new Event("user-updated"));
+        } catch (_) {}
         setSelectedFile(null);
         setSelectedDocTypeId("");
         setDocument_name("");

@@ -29,8 +29,11 @@
   bottom: 0;
   left: 0;
   right: 0;
-  height: 120px;
-  background: radial-gradient(ellipse at bottom, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
+  height: 140px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 280 140' fill='none'%3E%3Cpath d='M-20 100 C 60 50, 140 130, 300 70 L 300 140 L -20 140 Z' fill='%236366f1' fill-opacity='0.18'/%3E%3Cpath d='M-20 120 C 70 80, 160 145, 300 95 L 300 140 L -20 140 Z' fill='%23818cf8' fill-opacity='0.22'/%3E%3C/svg%3E");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: bottom;
   pointer-events: none;
 }
 
@@ -43,9 +46,129 @@
 }
 
 .sidebar-header {
-  padding: 1.25rem 1.5rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.18);
-  background: rgba(0, 0, 0, 0.08);
+  padding: 1.25rem 1.15rem 0.6rem 1.15rem;
+  background: transparent;
+  border-bottom: none;
+}
+
+/* User Card at top of sidebar */
+.sidebar-user-card {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.2rem 0.25rem 0.65rem 0.25rem;
+}
+
+.sidebar-user-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.sidebar-user-avatar-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.sidebar-user-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.sidebar-user-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.sidebar-welcome-label {
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.75);
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+.sidebar-year-label {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.25;
+  letter-spacing: 0.25px;
+}
+
+.sidebar-user-name {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.95);
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 175px;
+}
+
+/* Notifications Pill Button */
+.sidebar-notification-pill {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.55rem 0.9rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 9999px;
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 0.35rem;
+  box-sizing: border-box;
+}
+
+.sidebar-notification-pill:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.28);
+  transform: translateY(-1px);
+}
+
+.sidebar-notification-left {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.sidebar-notification-bell {
+  color: rgba(255, 255, 255, 0.9);
+  flex-shrink: 0;
+}
+
+.sidebar-notification-text {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #ffffff;
+}
+
+.sidebar-notification-badge {
+  background: #ef4444;
+  color: #ffffff;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  min-width: 19px;
+  height: 19px;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  line-height: 1;
 }
 
 .logo-container {
@@ -56,6 +179,7 @@
   padding: 8px 14px;
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 0.85rem;
 }
 
 .sidebar-logo {
@@ -67,7 +191,7 @@
 /* Sidebar Navigation */
 .sidebar-nav {
   flex: 1;
-  padding: 1rem 0;
+  padding: 0.6rem 0 1.5rem 0;
   overflow-y: auto;
   overflow-x: hidden;
 }
@@ -94,28 +218,30 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  padding: 0.85rem 1.5rem;
-  color: rgba(255, 255, 255, 0.9);
+  padding: 0.75rem 1.15rem;
+  margin: 3px 0.75rem;
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.88);
   text-decoration: none !important;
   transition: all 0.2s;
   position: relative;
   font-size: 0.9rem;
   font-weight: 500;
   cursor: pointer;
-  border-left: 3px solid transparent;
+  border-left: none;
 }
 
 .nav-item:hover {
-  background: rgba(255, 255, 255, 0.14);
-  color: #ffffff;
+  background: #2563eb !important;
+  color: #ffffff !important;
   text-decoration: none !important;
 }
 
 .nav-item.active {
-  background: linear-gradient(135deg, #1D2347 0%, #2c2f7e 100%);
+  background: linear-gradient(135deg, #213ee4 0%, #272ccf 100%) !important;
   color: #ffffff !important;
   font-weight: 600;
-  border-left: 3px solid #ffffff;
+  border-left: none;
   text-decoration: none !important;
 }
 
@@ -125,32 +251,35 @@
 
 /* Submenu Styles */
 .submenu {
-  background: rgba(0, 0, 0, 0.15);
-  padding: 0.4rem 0;
+  background: transparent;
+  padding: 0.2rem 0 0.4rem 0;
 }
 
 .submenu-item {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem 1.5rem 0.75rem 3.5rem;
-  color: rgba(255, 255, 255, 0.6);
+  gap: 0.65rem;
+  padding: 0.65rem 1.15rem 0.65rem 2.2rem;
+  margin: 2px 0.75rem;
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.75);
   text-decoration: none !important;
   transition: all 0.2s;
   font-size: 0.85rem;
+  font-weight: 500;
   cursor: pointer;
 }
 
 .submenu-item:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: #ffffff;
+  background: #2563eb !important;
+  color: #ffffff !important;
   text-decoration: none !important;
 }
 
 .submenu-item.active {
+  background: #213ee4 !important;
   color: #ffffff !important;
   font-weight: 600;
-  background: rgba(255, 255, 255, 0.18);
   text-decoration: none !important;
 }
 
@@ -346,7 +475,57 @@
   align-items: center;
   gap: 0.4rem;
   font-size: 0.85rem;
-  color: #4b5563;
+  color: #1D2347;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.contact-item:hover {
+  text-decoration: none;
+}
+
+.contact-item:hover span {
+  color: #1D2347;
+}
+
+/* Phone & email icon — solid filled SVG icons in full brand blue */
+.contact-item svg {
+  color: #2c2f7e !important;
+  fill: #2c2f7e !important;
+  stroke: none !important;
+  flex-shrink: 0;
+}
+
+.contact-item svg path {
+  fill: #2c2f7e !important;
+  stroke: none !important;
+}
+
+/* Phone & email number / address text (numbers and email retain neutral dark text, not icon color) */
+.contact-item span {
+  color: #000 !important;
+  font-weight: 500;
+  font-size: 0.85rem;
+}
+
+/* Stacked phone numbers */
+.phone-numbers-stacked {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.45;
+}
+
+.phone-numbers-stacked .phone-link {
+  color: #000 !important;
+  text-decoration: none !important;
+  font-size: 0.82rem;
+  font-weight: 500;
+  transition: color 0.15s ease;
+}
+
+.phone-numbers-stacked .phone-link:hover {
+  color: #2c2f7e !important;
 }
 
 .flag-icon {
