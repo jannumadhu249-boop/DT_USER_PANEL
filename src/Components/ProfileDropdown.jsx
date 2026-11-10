@@ -53,12 +53,14 @@ const ProfileDropdown = () => {
       const result = await res.json();
       if (result.success && result.data) {
         const profileData = result.data;
+        const stored = getStoredUser() || {};
         const userData = {
-          name: profileData.name || '',
-          email: profileData.email || '',
-          file_no: profileData.file_no || '',
-          file_status: profileData.file_status || { code: '', name: '' },
-          ...getStoredUser(),
+          ...stored,
+          ...profileData,
+          name: profileData.name || stored.name || '',
+          email: profileData.email || stored.email || '',
+          file_no: profileData.file_no || stored.file_no || '',
+          file_status: profileData.file_status || stored.file_status || { code: '', name: '' },
         };
         setUser(userData);
         localStorage.setItem('user', JSON.stringify(userData));
@@ -125,7 +127,11 @@ const ProfileDropdown = () => {
   const displayName = user?.name || user?.first_name || '';
   const displayEmail = user?.email || '';
   const displayFileNo = user?.file_no || '—';
-  const displayFileStatus = user?.file_status?.name || (typeof user?.file_status === 'string' ? user.file_status : '—');
+  const displayFileStatus =
+    user?.file_status?.name ||
+    user?.file_status?.label ||
+    (typeof user?.file_status === 'string' ? user.file_status : '') ||
+    '—';
   const userInitial = displayName ? displayName.trim().charAt(0).toUpperCase() : '';
 
   return (

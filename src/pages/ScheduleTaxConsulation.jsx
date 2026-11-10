@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { URLS } from "../url";
+import { getStoredUser } from "../utils/user";
 import "../styles/Dashboard.css";
 
 const ScheduleTaxConsultation = () => {
@@ -74,6 +75,12 @@ const ScheduleTaxConsultation = () => {
       if (data.success && data.data) {
         const scheduleList = Array.isArray(data.data) ? data.data : [data.data];
         setSchedules(scheduleList);
+
+        if (scheduleList.length > 0) {
+          try {
+            localStorage.setItem("consultation_scheduled", "true");
+          } catch (_) {}
+        }
 
         // Pre-fill form with the latest schedule
         if (scheduleList.length > 0) {
@@ -158,9 +165,36 @@ const ScheduleTaxConsultation = () => {
 
       const data = await res.json();
       if (data.success) {
-        setSuccessMsg(data.message || "Tax consultation scheduled successfully!");
+        setSuccessMsg(data.message);
         setShowForm(false);
+        try {
+          localStorage.setItem("consultation_scheduled", "true");
+        } catch (_) {}
         fetchSchedule();
+
+        // Immediately fetch updated profile to get new file_status
+        try {
+          const profileRes = await fetch(URLS.GetProfile, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          if (profileRes.ok) {
+            const pData = await profileRes.json();
+            if (pData.success && pData.data) {
+              const stored = getStoredUser() || {};
+              const updated = {
+                ...stored,
+                ...pData.data,
+              };
+              localStorage.setItem("user", JSON.stringify(updated));
+            }
+          }
+        } catch (_) {}
+
+        window.dispatchEvent(new Event("user-updated"));
       } else {
         setError(data.message || "Failed to schedule consultation.");
       }

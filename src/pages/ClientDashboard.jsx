@@ -121,6 +121,7 @@ const ClientDashboard = () => {
   const [dashboardData, setDashboardData] = useState(null);
   const [taxpayerData, setTaxpayerData] = useState(null);
   const [documentsData, setDocumentsData] = useState(null);
+  const [schedulesData, setSchedulesData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showWelcomeModal, setShowWelcomeModal] = useState(false);
   const [welcomeUserData, setWelcomeUserData] = useState(null);
@@ -188,6 +189,31 @@ const ClientDashboard = () => {
     }
   };
 
+  const fetchScheduleData = async () => {
+    try {
+      const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+      if (!token) return;
+      const res = await fetch(URLS.GetScheduleTaxNote, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success && data.data) {
+          const list = Array.isArray(data.data) ? data.data : [data.data];
+          setSchedulesData(list);
+          if (list.length > 0) {
+            try {
+              localStorage.setItem("consultation_scheduled", "true");
+            } catch (_) {}
+          }
+        }
+      }
+    } catch (err) {
+      console.error("Error fetching schedule data in ClientDashboard:", err);
+    }
+  };
+
   const fetchUserProfile = async () => {
     try {
       const token = localStorage.getItem("token") || sessionStorage.getItem("token");
@@ -200,7 +226,12 @@ const ClientDashboard = () => {
         const data = await res.json();
         if (data.success && data.data) {
           const profileData = data.data;
-          const updated = { ...getStoredUser(), ...profileData };
+          const stored = getStoredUser() || {};
+          const updated = {
+            ...stored,
+            ...profileData,
+            file_status: profileData.file_status || stored.file_status || { code: "", name: "" },
+          };
           setUser(updated);
           localStorage.setItem("user", JSON.stringify(updated));
           setWelcomeUserData(profileData);
@@ -245,12 +276,14 @@ const ClientDashboard = () => {
     fetchUserProfile();
     fetchTaxpayerData();
     fetchDocumentsData();
+    fetchScheduleData();
     const handleUserUpdated = () => {
       loadUser();
       fetchDashboardData();
       fetchUserProfile();
       fetchTaxpayerData();
       fetchDocumentsData();
+      fetchScheduleData();
     };
     window.addEventListener("user-updated", handleUserUpdated);
     const handleResize = () => setSidebarOpen(window.innerWidth > 768);
