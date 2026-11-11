@@ -75,10 +75,9 @@ const DownloadTaxReturns = () => {
   const handleDownload = async (filePath, originalName) => {
     try {
       const token = localStorage.getItem("token");
-      // Construct full URL (assuming URLS.BASE_URL is defined)
-      const baseUrl = URLS.BASE_URL || "http://187.127.143.141:4000";
-      // Normalize file path (replace backslashes with forward slashes)
-      const normalizedPath = filePath.replace(/\\/g, "/");
+      // Construct full URL — strip trailing slash from base and leading slash from path
+      const baseUrl = (URLS.Base_Url || "http://72.61.116.4:8000/").replace(/\/$/, "");
+      const normalizedPath = filePath.replace(/\\/g, "/").replace(/^\//, "");
       const downloadUrl = `${baseUrl}/${normalizedPath}`;
 
       const response = await fetch(downloadUrl, {

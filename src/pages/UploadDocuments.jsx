@@ -309,7 +309,7 @@ const UploadDocuments = () => {
   const getFileName = (doc) => {
     return (
       doc.document_name ||
-      // doc.file_name ||
+      doc.file_name ||
       // doc.original_name ||
       doc.name ||
       ""
