@@ -180,7 +180,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
     { icon: Upload, label: "Upload Tax Documents", path: "/dashboard/upload" },
     {
       icon: Calendar,
-      label: "Schedule a Tax Consultation",
+      label: "Schedule For Tax Note ",
       path: "/dashboard/schedule",
     },
     { icon: TrendingUp, label: "My Tax Summary", path: "/dashboard/tax-summary" },

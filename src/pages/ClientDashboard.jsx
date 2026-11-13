@@ -27,9 +27,13 @@ import {
 } from "lucide-react";
 import { getStoredUser, isEmailVerified } from "../utils/user";
 import {
-  FILE_STATUS_MAP,
-  resolveFilingStatusInfo,
+  PROGRESS_STATE,
   getDetailedStageProgress,
+  getFilingStageProgress,
+  getJourneyStepStates,
+  resolveFileStatus,
+  hasSubmittedTaxpayerInfo,
+  hasUploadedDocuments,
 } from "../utils/filingStatus";
 import { getMediaUrlCandidates, resolveMediaUrl } from "../utils/media";
 import { URLS } from "../url";
@@ -122,6 +126,7 @@ const ClientDashboard = () => {
   const [taxpayerData, setTaxpayerData] = useState(null);
   const [documentsData, setDocumentsData] = useState(null);
   const [schedulesData, setSchedulesData] = useState(null);
+  const [referralSummary, setReferralSummary] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showWelcomeModal, setShowWelcomeModal] = useState(false);
   const [welcomeUserData, setWelcomeUserData] = useState(null);
@@ -144,12 +149,13 @@ const ClientDashboard = () => {
       });
       if (res.ok) {
         const data = await res.json();
-        if (data.success && data.data) {
-          setTaxpayerData(data.data);
-          try {
-            localStorage.setItem("taxpayer_completed", "true");
-          } catch (_) {}
-        }
+        const record = data?.success ? data.data : null;
+        const submitted = hasSubmittedTaxpayerInfo(record);
+        setTaxpayerData(submitted ? record : null);
+        try {
+          if (submitted) localStorage.setItem("taxpayer_completed", "true");
+          else localStorage.removeItem("taxpayer_completed");
+        } catch (_) {}
       }
     } catch (err) {
       console.error("Error fetching taxpayer data:", err);
@@ -211,6 +217,24 @@ const ClientDashboard = () => {
       }
     } catch (err) {
       console.error("Error fetching schedule data in ClientDashboard:", err);
+    }
+  };
+
+  const fetchReferralSummary = async () => {
+    try {
+      const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+      if (!token) return;
+      // Same endpoint used by the Referrals Details page; only the summary is needed here.
+      const res = await fetch(`${URLS.GetReferrals}?page=1&limit=1`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data?.success && data.summary) setReferralSummary(data.summary);
+      }
+    } catch (err) {
+      console.error("Error fetching referral summary:", err);
     }
   };
 
@@ -277,6 +301,7 @@ const ClientDashboard = () => {
     fetchTaxpayerData();
     fetchDocumentsData();
     fetchScheduleData();
+    fetchReferralSummary();
     const handleUserUpdated = () => {
       loadUser();
       fetchDashboardData();
@@ -284,6 +309,7 @@ const ClientDashboard = () => {
       fetchTaxpayerData();
       fetchDocumentsData();
       fetchScheduleData();
+      fetchReferralSummary();
     };
     window.addEventListener("user-updated", handleUserUpdated);
     const handleResize = () => setSidebarOpen(window.innerWidth > 768);
@@ -303,23 +329,14 @@ const ClientDashboard = () => {
   const displayName = header?.name || dashboardData?.member?.name || user?.name || user?.first_name || "";
   const displayFileNo = header?.file_no || dashboardData?.member?.file_no || user?.file_no || "";
 
-  const fileStatusCode = (
-    header?.file_status_code ||
-    (typeof header?.file_status === "string" && (FILE_STATUS_MAP[header.file_status.toUpperCase().trim()] || header.file_status.length <= 10) ? header.file_status : "") ||
-    dashboardData?.file_status_code ||
-    dashboardData?.file_status?.code || user?.file_status?.code || ""
-  ).toUpperCase().trim();
+  // Single source of truth for the current file status: the raw API value is
+  // normalised into one canonical workflow code used by every stage below.
+  const {
+    code: fileStatusCode,
+    name: fileStatusName,
+    info: currentStatusInfo,
+  } = resolveFileStatus({ header, dashboardData, user });
 
-  const fileStatusName =
-    header?.file_status_name ||
-    (typeof header?.file_status === "string" && FILE_STATUS_MAP[header.file_status.toUpperCase().trim()] ? FILE_STATUS_MAP[header.file_status.toUpperCase().trim()].label : "") ||
-    header?.file_status || dashboardData?.file_status_name ||
-    (typeof dashboardData?.file_status === "string" ? dashboardData.file_status : dashboardData?.file_status?.name) ||
-    dashboardData?.filing?.status || dashboardData?.member?.file_status ||
-    user?.file_status?.name || (typeof user?.file_status === "string" ? user.file_status : "") ||
-    "Registered Users";
-
-  const currentStatusInfo = resolveFilingStatusInfo({ fileStatusCode, fileStatusName });
   const displayStatus = currentStatusInfo.label || fileStatusName || "Registered";
 
   const detailedProgress = getDetailedStageProgress(currentStatusInfo.code);
@@ -339,6 +356,12 @@ const ClientDashboard = () => {
     calculateDaysToDeadline();
 
   const referralAmount = dashboardData?.referral?.amount ?? dashboardData?.referral_rewards?.amount ?? 0;
+  const referralTotalEarned = referralSummary?.total ?? referralSummary?.total_amount ?? 0;
+
+  const formatAmount = (value) => {
+    const num = typeof value === "number" ? value : Number(value);
+    return Number.isFinite(num) ? num.toFixed(2) : "0.00";
+  };
 
   const poc = dashboardData?.point_of_contact || cards?.preparer || dashboardData?.preparer;
   const pocName = poc?.name || "";
@@ -362,10 +385,10 @@ const ClientDashboard = () => {
   const now = new Date();
   const dateDisplay = now.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
 
-  const irsAccepted =
-    fileStatusCode === "VA" || fileStatusCode === "EF" || fileStatusCode === "FA" ||
-    (fileStatusName || "").toLowerCase().includes("accepted") ||
-    (fileStatusName || "").toLowerCase().includes("verified");
+  // The IRS acceptance banner follows the same milestone rules as the stepper,
+  // so "awaiting acceptance" never reads as "accepted".
+  const filingStageProgress = getFilingStageProgress(fileStatusCode);
+  const irsAccepted = filingStageProgress.irsAcceptance === PROGRESS_STATE.COMPLETED;
 
   const recentActivity = dashboardData?.recent_activity || dashboardData?.activities || [];
 
@@ -383,41 +406,30 @@ const ClientDashboard = () => {
   })();
 
   // Intake step statuses from API
-  const intakeStepsApi = dashboardData?.complete_your_intake?.steps || [];
+  const intakeStepsApi = Array.isArray(dashboardData?.complete_your_intake?.steps)
+    ? dashboardData.complete_your_intake.steps
+    : [];
   const getIntakeStatus = (key, fallback) => {
-    const found = intakeStepsApi.find((s) => s.key === key);
-    return found?.status || fallback;
+    const found = intakeStepsApi.find((s) => s?.key === key);
+    if (typeof found?.status === "string" && found.status.trim()) return found.status;
+    return typeof fallback === "string" ? fallback : "";
   };
 
-  // Resolve taxpayer completion from local persistence, fetched API taxpayer data, or dashboardData
+  // Client Info is only completed by an actual taxpayer record (or the backend
+  // intake status). Spouse / dependent data never completes this stage.
+  const taxpayerIntakeStatus = getIntakeStatus("basic_information", "");
   const isTaxpayerCompleted = Boolean(
-    localStorage.getItem("taxpayer_completed") === "true" ||
-    (taxpayerData && (
-      taxpayerData.first_name ||
-      taxpayerData.last_name ||
-      taxpayerData.email ||
-      taxpayerData.contact_number ||
-      taxpayerData.ssn_itin ||
-      taxpayerData.street_address ||
-      taxpayerData.city ||
-      taxpayerData.date_of_birth ||
-      taxpayerData.id ||
-      taxpayerData._id
-    )) ||
-    (dashboardData?.taxpayer && (
-      dashboardData.taxpayer.first_name ||
-      dashboardData.taxpayer.last_name ||
-      dashboardData.taxpayer.id ||
-      dashboardData.taxpayer._id
-    )) ||
-    (intakeStepsApi.find((s) => s.key === "basic_information")?.status?.toLowerCase() === "complete")
+    hasSubmittedTaxpayerInfo(taxpayerData) ||
+    hasSubmittedTaxpayerInfo(dashboardData?.taxpayer) ||
+    taxpayerIntakeStatus.toLowerCase() === "complete" ||
+    taxpayerIntakeStatus.toLowerCase() === "completed"
   );
 
   const basicInfoStatus = isTaxpayerCompleted
     ? "Complete"
     : getIntakeStatus("basic_information", dashboardData?.intake?.basic_information?.status || "Pending");
 
-  // Resolve documents upload status
+  // A single successfully uploaded document completes the Documents stage.
   const documentsStatusRaw = getIntakeStatus(
     "documents",
     dashboardData?.intake?.documents?.status ||
@@ -426,15 +438,14 @@ const ClientDashboard = () => {
   );
 
   const isDocumentsCompleted = Boolean(
-    localStorage.getItem("documents_completed") === "true" ||
-    (Array.isArray(documentsData) && documentsData.length > 0) ||
-    (documentsData?.documents && Array.isArray(documentsData.documents) && documentsData.documents.length > 0) ||
-    (Number(documentsData?.count) > 0) ||
-    (Array.isArray(dashboardData?.documents) && dashboardData.documents.length > 0) ||
-    (Array.isArray(dashboardData?.uploaded_documents) && dashboardData.uploaded_documents.length > 0) ||
-    (Array.isArray(dashboardData?.document_uploads) && dashboardData.document_uploads.length > 0) ||
-    (documentsStatusRaw?.toLowerCase() === "complete" || documentsStatusRaw?.toLowerCase() === "completed") ||
-    (intakeStepsApi.find((s) => s.key === "documents")?.status?.toLowerCase() === "complete")
+    hasUploadedDocuments(
+      documentsData,
+      dashboardData?.documents,
+      dashboardData?.uploaded_documents,
+      dashboardData?.document_uploads
+    ) ||
+    documentsStatusRaw?.toLowerCase() === "complete" ||
+    documentsStatusRaw?.toLowerCase() === "completed"
   );
 
   const documentsStatus = isDocumentsCompleted
@@ -549,122 +560,19 @@ const ClientDashboard = () => {
 
   const canShowOverviewImage = Boolean(overviewImage && !shouldHideOverviewImage);
 
-  // ── Tax Year 2026 Journey Steps: User-defined 6 Milestone Logic ─────────
-  const currentStage = currentStatusInfo?.stage != null ? Number(currentStatusInfo.stage) : 0;
-  const normStatus = (fileStatusName || displayStatus || "").toLowerCase().trim();
-
-  // 6. IRS acceptance should show when user file status in e-filing Accepted
-  const isStep5Done = Boolean(
-    irsAccepted ||
-    fileStatusCode === "EFA_FC" ||
-    fileStatusCode === "PF_D" ||
-    fileStatusCode === "VA" ||
-    fileStatusCode === "FA" ||
-    fileStatusCode === "EF" ||
-    normStatus.includes("accepted") ||
-    normStatus.includes("filing complete") ||
-    currentStage >= 5
-  );
-
-  // 5. Return Filed should show completed when user in file status E-filing pending -1 and 2 status
-  const isStep4Done = Boolean(
-    isStep5Done ||
-    fileStatusCode === "EFP_I" ||
-    fileStatusCode === "EFP_II" ||
-    fileStatusCode === "EF_AA_I" ||
-    fileStatusCode === "EF_AA_II" ||
-    fileStatusCode === "EF_REJ" ||
-    fileStatusCode === "PF_P" ||
-    fileStatusCode === "PF_D" ||
-    fileStatusCode === "C_R" ||
-    normStatus.includes("efiling pending") ||
-    normStatus.includes("e-filing pending") ||
-    normStatus.includes("awaiting acceptance") ||
-    normStatus.includes("return filed") ||
-    normStatus.includes("city return") ||
-    currentStage >= 4
-  );
-
-  // 4. Client Review should show completed when user in file status client review and e-filed pending -1, 2 completed
-  const isStep3Done = Boolean(
-    isStep4Done ||
-    fileStatusCode === "CR_EF" ||
-    fileStatusCode === "CR_PF" ||
-    fileStatusCode === "TR_S_I" ||
-    fileStatusCode === "TR_S_II" ||
-    fileStatusCode === "ITIN" ||
-    normStatus.includes("client review") ||
-    normStatus.includes("review & summary") ||
-    normStatus.includes("review and summary")
-  );
-
-  // 3. Tax Preparation should show completed when user in file status fee payment received -1 or 2 status or when payment completed
-  const isFeePaymentReceived = Boolean(
-    fileStatusCode === "FPR" ||
-    fileStatusCode === "FPR_II" ||
-    normStatus.includes("fee payment received") ||
-    normStatus.includes("payment received") ||
-    normStatus.includes("payment done")
-  );
-  const isPaymentCompleted = Boolean(
-    dashboardData?.payment_status === 1 ||
-    dashboardData?.payment_status === 2 ||
-    dashboardData?.payment_status === "completed" ||
-    dashboardData?.payment_status === "paid" ||
-    dashboardData?.fee_status === 1 ||
-    dashboardData?.fee_status === 2 ||
-    dashboardData?.fee_status === "completed" ||
-    dashboardData?.fee_status === "paid"
-  );
-  const isStep2Done = Boolean(
-    isStep3Done ||
-    isFeePaymentReceived ||
-    isPaymentCompleted ||
-    (currentStage > 2)
-  );
-
-  // 2. Documents should show completed when user submitted his upload documents completed
-  const isStep1Done = Boolean(
-    isStep2Done ||
-    isDocumentsCompleted ||
-    (currentStage > 1)
-  );
-
-  // 1. Client info should show completed when the user completed his taxpayer information
-  const isStep0Done = Boolean(
-    isStep1Done ||
-    isTaxpayerCompleted ||
-    (currentStage > 0)
-  );
-
-  const rawStepDoneStates = [isStep0Done, isStep1Done, isStep2Done, isStep3Done, isStep4Done, isStep5Done];
-
-  // The first uncompleted step is current (active); if all are complete, none are active
-  const firstUnfinishedIdx = isStep5Done ? -1 : rawStepDoneStates.findIndex((d) => !d);
-
-  const journeySteps = [
-    { label: "Client info" },
-    { label: "Documents" },
-    { label: "Tax Preparation" },
-    { label: "Client Review" },
-    { label: "Return Filed" },
-    { label: "IRS Acceptance" },
-  ].map((step, idx) => {
-    const done = rawStepDoneStates[idx];
-    const active = idx === firstUnfinishedIdx;
-
-    let statusText = "";
-    if (done) {
-      statusText = idx === 4 ? "Submitted" : "Completed";
-    }
-
-    return {
-      ...step,
-      done,
-      active,
-      statusText,
-    };
-  });
+  // ── Tax Year 2026 Journey Steps ──────────────────────────────────────
+  // Every milestone is calculated independently by the shared status mapping:
+  // Client info / Documents from their own submission data, the remaining four
+  // purely from the current file status.
+  const journeySteps = getJourneyStepStates({
+    fileStatusCode,
+    taxpayerCompleted: isTaxpayerCompleted,
+    documentsCompleted: isDocumentsCompleted,
+  }).map((step) => ({
+    ...step,
+    done: step.state === PROGRESS_STATE.COMPLETED,
+    inProgress: step.state === PROGRESS_STATE.IN_PROGRESS,
+  }));
 
   const emailVerified = isEmailVerified(user);
 
@@ -807,7 +715,7 @@ const ClientDashboard = () => {
                   <div className="cd-metric-icon cd-icon-blue"><FileText size={16} /></div>
                 </div>
                 <p className="cd-metric-value cd-mono">#{displayFileNo || "—"}</p>
-                <span className="cd-metric-badge cd-badge-navy">{displayStatus}</span>
+                <span className="cd-metric-badge cd-badge-green">{displayStatus}</span>
               </div>
 
               <div className="cd-metric-card">
@@ -829,7 +737,19 @@ const ClientDashboard = () => {
                     </svg>
                   </div>
                 </div>
-                <p className="cd-metric-value">${typeof referralAmount === "number" ? referralAmount.toFixed(2) : "0.00"}</p>
+                <div className="cd-refer-values">
+                  <div className="cd-refer-stat">
+                    <span className="cd-refer-stat-head">
+                      <span className="cd-bonus-label">Bonus</span>
+                      {/* <span className="cd-bonus-chip">Credit</span> */}
+                    </span>
+                    <p className="cd-metric-value">${formatAmount(referralTotalEarned)}</p>
+                  </div>
+                  <div className="cd-refer-stat cd-refer-stat-right">
+                    <span className="cd-bonus-chip">Credit</span>
+                    <p className="cd-metric-value">${formatAmount(referralAmount)}</p>
+                  </div>
+                </div>
                 <button className="cd-refer-link" onClick={() => navigate("/dashboard/referrals")}>
                   Refer a Friend <ChevronRight size={13} />
                 </button>
@@ -1094,19 +1014,24 @@ const ClientDashboard = () => {
               <div className="cd-stepper">
                 {journeySteps.map((step, idx) => {
                   const isLast = idx === journeySteps.length - 1;
+                  const sublabelClass = step.done
+                    ? "cd-sublabel-completed"
+                    : step.inProgress
+                    ? "cd-sublabel-progress"
+                    : "cd-sublabel-pending";
                   return (
-                    <React.Fragment key={idx}>
+                    <React.Fragment key={step.key}>
                       <div className="cd-step">
                         <div
                           className={`cd-step-circle ${
-                            step.done ? "cd-step-done" : step.active ? "cd-step-active" : ""
+                            step.done ? "cd-step-done" : step.inProgress ? "cd-step-active" : ""
                           }`}
                         >
                           {step.done ? <Check size={18} strokeWidth={3} /> : <StepIcon idx={idx} />}
                         </div>
                         <span
                           className={`cd-step-label ${
-                            step.active
+                            step.inProgress
                               ? "cd-step-label-active"
                               : step.done
                               ? "cd-step-label-done"
@@ -1115,11 +1040,9 @@ const ClientDashboard = () => {
                         >
                           {step.label}
                         </span>
-                        {step.done && step.statusText && (
-                          <span className="cd-step-sublabel cd-sublabel-completed">
-                            {step.statusText}
-                          </span>
-                        )}
+                        <span className={`cd-step-sublabel ${sublabelClass}`}>
+                          {step.statusLabel}
+                        </span>
                       </div>
                       {!isLast && (
                         <div

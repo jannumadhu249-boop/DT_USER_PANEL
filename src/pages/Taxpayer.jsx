@@ -41,6 +41,7 @@ const Taxpayer = () => {
     contact_number: "",
     alternate_number: "",
     email: "",
+    alternate_email: "",
     date_of_marriage: "",
     mailing_address: "",
     city: "",
@@ -110,6 +111,7 @@ const Taxpayer = () => {
           contact_number: item.contact_number || "",
           alternate_number: item.alternate_number || "",
           email: item.email || "",
+          alternate_email: item.alternate_email || "",
           date_of_marriage: item.date_of_marriage || "",
           mailing_address: item.mailing_address || "",
           city: item.city || "",
@@ -254,6 +256,7 @@ const Taxpayer = () => {
     const phone = formData.contact_number.replace(/\D/g, "");
     const altPhone = formData.alternate_number.replace(/\D/g, "");
     const email = formData.email.trim();
+    const altEmail = formData.alternate_email.trim();
 
     if (!isValidPhone(phone)) {
       setError("Contact Number must be exactly 10 digits.");
@@ -265,6 +268,10 @@ const Taxpayer = () => {
     }
     if (!email) {
       setError("Email is required.");
+      return false;
+    }
+    if (altEmail.length > 0 && !isValidEmail(altEmail)) {
+      setError("Alternate Email must be a valid email address.");
       return false;
     }
     if (!isValidEmail(email)) {
@@ -328,6 +335,7 @@ const Taxpayer = () => {
       contact_number: formData.contact_number,
       alternate_number: formData.alternate_number,
       email: formData.email,
+      alternate_email: formData.alternate_email,
       mailing_address: formData.mailing_address,
       city: formData.city,
       state: formData.state,
@@ -751,44 +759,7 @@ const Taxpayer = () => {
                       </select>
                     </div>
                   </div>
-                </div>
-              </div>
-
-              {/* CARD 2: Contact Details */}
-              <div className="form-card" style={{ marginBottom: "1.5rem" }}>
-                <h3 className="form-title">
-                  <Mail size={20} />
-                  Contact Information
-                </h3>
-                <div className="form-grid">
-                  {/* <div className="form-group">
-                    <label>
-                      Filing Status <span style={{ color: "red" }}>*</span>
-                    </label>
-                    <div className="input-icon-wrap">
-                      <span className="input-icon"><Heart size={18} /></span>
-                      <select
-                        className="form-control"
-                        name="filing_status"
-                        value={formData.filing_status}
-                        onChange={handleChange}
-                        style={{ paddingLeft: "42px" }}
-                      >
-                        {!filingOptions.includes(formData.filing_status) &&
-                          formData.filing_status && (
-                            <option value={formData.filing_status}>
-                              {formData.filing_status}
-                            </option>
-                          )}
-                        {filingOptions.map((opt) => (
-                          <option key={opt} value={opt}>
-                            {opt}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </div> */}
-
+                  
                   {showMarriageDate && (
                     <div className="form-group">
                       <label>
@@ -837,7 +808,17 @@ const Taxpayer = () => {
                       </select>
                     </div>
                   </div>
+                  
+                </div>
+              </div>
 
+              {/* CARD 2: Contact Details */}
+              <div className="form-card" style={{ marginBottom: "1.5rem" }}>
+                <h3 className="form-title">
+                  <Mail size={20} />
+                  Contact Information
+                </h3>
+                <div className="form-grid">
                   <div className="form-group">
                     <label>
                       Contact Number <span style={{ color: "red" }}>*</span>
@@ -868,6 +849,7 @@ const Taxpayer = () => {
                       />
                     </div>
                   </div>
+
                   <div className="form-group">
                     <label>
                       Email <span style={{ color: "red" }}>*</span>
@@ -880,6 +862,23 @@ const Taxpayer = () => {
                         placeholder="Enter Email Address"
                         name="email"
                         value={formData.email}
+                        onChange={handleChange}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-group">
+                    <label>
+                      Alternate Email
+                    </label>
+                    <div className="input-icon-wrap">
+                      <span className="input-icon"><Mail size={18} /></span>
+                      <input
+                        type="alternate_email"
+                        className="form-control"
+                        placeholder="Enter Email Address"
+                        name="alternate_email"
+                        value={formData.alternate_email}
                         onChange={handleChange}
                       />
                     </div>

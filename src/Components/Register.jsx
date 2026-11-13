@@ -1,11 +1,13 @@
 import React, { useState, useRef, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { Eye, EyeOff, CheckCircle, User, Mail, Phone, Globe, Lock, AlertTriangle, ShieldCheck } from "lucide-react";
+import { useNavigate, useSearchParams, Link } from "react-router-dom";
+import { Eye, EyeOff, CheckCircle, User, Mail, Phone, Globe, Lock, AlertTriangle, ShieldCheck, Gift } from "lucide-react";
 import { URLS } from "../url";
 
 // Validation constants (matching Login component)
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PASSWORD_MIN_LENGTH = 8;
+// Backend field name used to send the referral code captured from the referral link
+const REFERRAL_CODE_FIELD = "referral_code";
 const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+{}\[\]:;"'<>,.?/~`\\-])[A-Za-z\d!@#$%^&*()_+{}\[\]:;"'<>,.?/~`\\-]{8,}$/;
 
 const Register = () => {
@@ -25,9 +27,15 @@ const Register = () => {
     terms: false,
   });
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  // ── Referral Code (from the referral registration link) ──
+  // Derived from the URL so it stays available during the OTP step and is
+  // empty for normal registrations (no referral link).
+  const referralCode = (searchParams.get("referral_code") || "").trim();
 
   // ── Verification Step States ──
-  const [step, setStep] = useState("register"); // "register" | "verify"
+  const [step, setStep] = useState("register");
   const [verifyEmail, setVerifyEmail] = useState("");
   const [verifyOtpDigits, setVerifyOtpDigits] = useState(["", "", "", "", "", ""]);
   const [verifyOtpSent, setVerifyOtpSent] = useState(false);
@@ -252,6 +260,10 @@ const Register = () => {
       body.append("alter_number", formData.alter_number.trim() || formData.contact_number.trim());
       body.append("time_zone", formData.time_zone);
       body.append("email", formData.email.trim());
+      // Only sent when the user arrived through a referral link
+      if (referralCode) {
+        body.append(REFERRAL_CODE_FIELD, referralCode);
+      }
       body.append("password", formData.password);
       body.append("current_stage", "New");
       body.append("stage", "Pending");
@@ -511,6 +523,36 @@ const Register = () => {
                       />
                     </div>
                   </div>
+
+                  {/* Referral Code – only visible for referral registrations */}
+                  {referralCode && (
+                    <div className="mb-2">
+                      <label className="form-label mb-1" style={{ fontSize: "0.75rem" }}>
+                        Referral Code
+                      </label>
+                      <div className="auth-field-wrap">
+                        <span className="auth-icon"><Gift size={15} /></span>
+                        <input
+                          type="text"
+                          className="form-control"
+                          value={referralCode}
+                          readOnly
+                          aria-label="Referral code"
+                          style={{
+                            padding: "8px 12px 8px 38px",
+                            fontSize: "0.88rem",
+                            backgroundColor: "#f1f5f9",
+                            color: "#1e1b4b",
+                            fontWeight: 600,
+                            cursor: "default",
+                          }}
+                        />
+                      </div>
+                      <small className="text-muted d-block mt-0.5" style={{ fontSize: "0.72rem" }}>
+                        You were referred by a friend – this code is applied automatically.
+                      </small>
+                    </div>
+                  )}
 
                   {/* ─── Combined Row: Time Zone | Country Code | Phone Number ─── */}
                   <div className="mb-2">

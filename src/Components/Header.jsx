@@ -1,8 +1,9 @@
-import React from "react";
+import { useEffect, useRef } from "react";
 import { Menu, X, Users } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import ProfileDropdown from "./ProfileDropdown";
 import NotificationDropdown from "./NotificationDropdown";
+import { buildMailtoUrl, scheduleMailFallback, CONTACT_EMAIL } from "../utils/mail";
 
 // Filled phone icon SVG (solid glyph)
 const PhoneFilled = () => (
@@ -34,6 +35,21 @@ const MailFilled = () => (
 
 const Header = ({ sidebarOpen, setSidebarOpen }) => {
   const navigate = useNavigate();
+  const mailFallbackTimerRef = useRef(null);
+
+  // Clear the pending mail fallback when the header unmounts
+  useEffect(() => {
+    return () => {
+      if (mailFallbackTimerRef.current) clearTimeout(mailFallbackTimerRef.current);
+    };
+  }, []);
+
+  // The anchor opens the desktop client; if no handler is registered the page
+  // keeps focus and the same message opens in a web compose window instead.
+  const handleEmailClick = () => {
+    if (mailFallbackTimerRef.current) clearTimeout(mailFallbackTimerRef.current);
+    mailFallbackTimerRef.current = scheduleMailFallback({ to: CONTACT_EMAIL });
+  };
 
   const handleReferFriend = () => {
     navigate("/referrals/refer-friend");
@@ -85,7 +101,11 @@ const Header = ({ sidebarOpen, setSidebarOpen }) => {
             <PhoneFilled />
             <span>+91-8466077444</span>
           </a>
-          <a href="mailto:contact@dollartaxfiler.com" className="contact-item">
+          <a
+            href={buildMailtoUrl({ to: CONTACT_EMAIL })}
+            className="contact-item"
+            onClick={handleEmailClick}
+          >
             <MailFilled />
             <span>contact@dollartaxfiler.com</span>
           </a>
