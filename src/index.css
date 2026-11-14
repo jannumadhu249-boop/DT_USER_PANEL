@@ -231,6 +231,21 @@ a:hover {
   color: #4a5295;
 }
 
+/* ── Auth status chip (register / verify-email step) ──
+   A dedicated class keeps the chip in normal flow: the global .badge rule
+   pins badges to a corner, which pushed this chip out of the form. */
+.auth-status-chip {
+  position: static;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: auto;
+  max-width: 100%;
+  line-height: 1.2;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
 /* ── Form input icon wrapper (for dashboard forms) ── */
 .input-icon-wrap {
   position: relative;

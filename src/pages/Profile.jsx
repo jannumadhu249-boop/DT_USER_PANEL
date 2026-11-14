@@ -125,8 +125,10 @@ const Profile = () => {
         first_name: firstName,
         last_name: lastName,
         name: fullName,
-        email:
-          taxPayerData.email || profileData.email || stored.email || "",
+        // The member profile endpoint is the source of truth for the login email;
+        // the taxpayer record can hold a different (stale) address, so it is only
+        // used as a fallback.
+        email: profileData.email || taxPayerData.email || stored.email || "",
         alternate_email:
           taxPayerData.alternate_email ||
           taxPayerData.refer_email ||

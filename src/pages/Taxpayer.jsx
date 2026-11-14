@@ -852,7 +852,7 @@ const Taxpayer = () => {
 
                   <div className="form-group">
                     <label>
-                      Email <span style={{ color: "red" }}>*</span>
+                      Primary Email <span style={{ color: "red" }}>*</span>
                     </label>
                     <div className="input-icon-wrap">
                       <span className="input-icon"><Mail size={18} /></span>
@@ -884,7 +884,7 @@ const Taxpayer = () => {
                     </div>
                   </div>
 
-                  <div className="form-group full-width">
+                  <div className="form-group">
                     <label>
                       Mailing Address <span style={{ color: "red" }}>*</span>
                     </label>
@@ -979,7 +979,7 @@ const Taxpayer = () => {
               </div>
 
               {/* CARD 3: Referral Details */}
-              <div className="form-card" style={{ marginBottom: "1.5rem" }}>
+              {/* <div className="form-card" style={{ marginBottom: "1.5rem" }}>
                 <h3 className="form-title">
                   <Users2 size={20} />
                   Referral Details
@@ -1067,7 +1067,7 @@ const Taxpayer = () => {
                     </>
                   )}
                 </div>
-              </div>
+              </div> */}
 
               {/* Save Button - Outside all cards */}
               <div className="form-actions">

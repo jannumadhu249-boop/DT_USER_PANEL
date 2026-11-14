@@ -120,6 +120,17 @@
   color: #fca5a5;
 }
 
+/* Inline action shown when the browser blocks the fallback mail window */
+.refer-inline-link {
+  color: #bfdbfe;
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+.refer-inline-link:hover {
+  color: #dbeafe;
+}
+
 .refer-ticket-share-label {
   margin-top: 18px;
 }
@@ -135,7 +146,7 @@
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  padding: 4px 12px 4px 5px;
+  padding: 8px 8px 8px 8px;
   border: 1px solid rgba(255, 255, 255, 0.16);
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.08);
@@ -186,6 +197,10 @@
 
 .refer-share-icon--facebook {
   background: #1877f2;
+}
+
+.refer-share-icon--instagram {
+  background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
 }
 
 .refer-share-icon--x {

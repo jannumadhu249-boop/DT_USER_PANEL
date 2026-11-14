@@ -1253,11 +1253,13 @@
   flex-shrink: 0;
 }
 
-/* Both referral figures share the same scale inside the card */
+/* Both referral figures share the same scale and the "Credit" chip colour;
+   the selector is scoped to this card so other metric values stay dark. */
 .cd-refer-values .cd-metric-value {
   margin: 0;
   font-size: 24px;
   overflow-wrap: anywhere;
+  color: #000;
 }
 
 .cd-metric-icon {
@@ -1285,7 +1287,7 @@
 }
 
 .cd-metric-value.cd-mono {
-  font-family: 'IBM Plex Mono', 'Roboto Mono', monospace;
+  /* font-family: 'IBM Plex Mono', 'Roboto Mono', monospace; */
   font-size: 28px;
 }
 

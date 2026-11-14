@@ -271,14 +271,14 @@
 }
 
 .submenu-item:hover {
-  background: #2563eb !important;
-  color: #ffffff !important;
+  background: #d8dce4 !important;
+  color: #0c0a0a !important;
   text-decoration: none !important;
 }
 
 .submenu-item.active {
-  background: #213ee4 !important;
-  color: #ffffff !important;
+  background: #d8dce4 !important;
+  color: #0c0a0a !important;
   font-weight: 600;
   text-decoration: none !important;
 }

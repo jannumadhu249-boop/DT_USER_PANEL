@@ -18,15 +18,27 @@ const buildQuery = (pairs) =>
     .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
     .join("&");
 
+// Addresses are encoded one by one so a multiple-recipient list keeps its
+// separating commas, which encodeURIComponent would otherwise escape.
+const encodeAddresses = (value = "") =>
+  String(value)
+    .split(",")
+    .map((address) => address.trim())
+    .filter(Boolean)
+    .map((address) => encodeURIComponent(address))
+    .join(",");
+
 export const buildMailtoUrl = ({ to = "", subject = "", body = "" }) => {
   const query = buildQuery([
     ["subject", subject],
     ["body", body],
   ]);
-  return `mailto:${to}${query ? `?${query}` : ""}`;
+  return `mailto:${encodeAddresses(to)}${query ? `?${query}` : ""}`;
 };
 
-// Web compose window used only when the desktop handler never launches
+// Web compose window used only when the desktop handler never launches.
+// The raw address list is passed in: buildQuery encodes it once, so the result
+// never contains a double-encoded value such as friend%2540example.com.
 export const buildWebComposeUrl = ({ to = "", subject = "", body = "" }) => {
   const query = buildQuery([
     ["view", "cm"],
@@ -40,10 +52,17 @@ export const buildWebComposeUrl = ({ to = "", subject = "", body = "" }) => {
 
 // A desktop client opens outside the browser, so the page loses focus. If the
 // page still has focus shortly after the click, no handler ran and the compose
-// window is opened in the browser instead. Returns the timer id for cleanup.
-export const scheduleMailFallback = ({ to = "", subject = "", body = "" }, delay = FALLBACK_DELAY) =>
+// window is opened in the browser instead. A delayed window.open is treated as a
+// popup by most browsers and may return null, so the blocked case is reported to
+// the caller instead of failing silently. Returns the timer id for cleanup.
+export const scheduleMailFallback = (
+  { to = "", subject = "", body = "" },
+  delay = FALLBACK_DELAY,
+  onBlocked
+) =>
   window.setTimeout(() => {
-    if (document.hasFocus()) {
-      window.open(buildWebComposeUrl({ to, subject, body }), "_blank", "noopener,noreferrer");
-    }
+    if (!document.hasFocus()) return; // a desktop client already opened
+    const composeUrl = buildWebComposeUrl({ to, subject, body });
+    const composeWindow = window.open(composeUrl, "_blank", "noopener,noreferrer");
+    if (!composeWindow && typeof onBlocked === "function") onBlocked(composeUrl);
   }, delay);

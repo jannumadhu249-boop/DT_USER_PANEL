@@ -524,36 +524,6 @@ const Register = () => {
                     </div>
                   </div>
 
-                  {/* Referral Code – only visible for referral registrations */}
-                  {referralCode && (
-                    <div className="mb-2">
-                      <label className="form-label mb-1" style={{ fontSize: "0.75rem" }}>
-                        Referral Code
-                      </label>
-                      <div className="auth-field-wrap">
-                        <span className="auth-icon"><Gift size={15} /></span>
-                        <input
-                          type="text"
-                          className="form-control"
-                          value={referralCode}
-                          readOnly
-                          aria-label="Referral code"
-                          style={{
-                            padding: "8px 12px 8px 38px",
-                            fontSize: "0.88rem",
-                            backgroundColor: "#f1f5f9",
-                            color: "#1e1b4b",
-                            fontWeight: 600,
-                            cursor: "default",
-                          }}
-                        />
-                      </div>
-                      <small className="text-muted d-block mt-0.5" style={{ fontSize: "0.72rem" }}>
-                        You were referred by a friend – this code is applied automatically.
-                      </small>
-                    </div>
-                  )}
-
                   {/* ─── Combined Row: Time Zone | Country Code | Phone Number ─── */}
                   <div className="mb-2">
                     <label className="form-label mb-1" style={{ fontSize: "0.75rem" }}>
@@ -649,6 +619,36 @@ const Register = () => {
                     )}
                   </div>
 
+                  {/* Referral Code – only visible for referral registrations */}
+                  {referralCode && (
+                    <div className="mb-2">
+                      <label className="form-label mb-1" style={{ fontSize: "0.75rem" }}>
+                        Referral Code
+                      </label>
+                      <div className="auth-field-wrap">
+                        <span className="auth-icon"><Gift size={15} /></span>
+                        <input
+                          type="text"
+                          className="form-control"
+                          value={referralCode}
+                          readOnly
+                          aria-label="Referral code"
+                          style={{
+                            padding: "8px 12px 8px 38px",
+                            fontSize: "0.88rem",
+                            backgroundColor: "#f1f5f9",
+                            color: "#1e1b4b",
+                            fontWeight: 600,
+                            cursor: "default",
+                          }}
+                        />
+                      </div>
+                      <small className="text-muted d-block mt-0.5" style={{ fontSize: "0.72rem" }}>
+                        You were referred by a friend – this code is applied automatically.
+                      </small>
+                    </div>
+                  )}
+
                   {/* Terms */}
                   <div className="mb-2.5 mt-1">
                     <div className="form-check d-flex align-items-center gap-2">
@@ -703,7 +703,7 @@ const Register = () => {
                 <div className="text-center mb-3">
                   {verifySuccess ? (
                     <span
-                      className="badge px-3 py-2 d-inline-flex align-items-center gap-2"
+                      className="auth-status-chip px-3 py-2 d-inline-flex align-items-center gap-2"
                       style={{
                         backgroundColor: "#ecfdf5",
                         color: "#059669",
@@ -717,7 +717,7 @@ const Register = () => {
                     </span>
                   ) : (
                     <span
-                      className="badge px-3 py-2 d-inline-flex align-items-center gap-2"
+                      className="auth-status-chip px-3 py-2 d-inline-flex align-items-center gap-2"
                       style={{
                         backgroundColor: "#fffbeb",
                         color: "#b45309",
