@@ -65,8 +65,13 @@ export const buildReferralLink = (code = "") => buildReferralRegisterLink(code, 
 
 export const URLS = {
 
+
+    PayGlocalKey : "cGxkb2xsYXJ0YXhmaWxlOmtJZC1zYnlYcnY2d2xuMlNob2kx",
+    
+
     Base_Url : base_url,
     ImageUrl : base_url,
+
 
     //Authentication
     Registration : base_url + "v1/dollarTax/user/auth/register",
@@ -159,5 +164,8 @@ export const URLS = {
     GetTaxOrganizerDocuments : base_url + "v1/dollarTax/user/document/getAll/tax-organizer",
     DownloadFbarQuestionnaire : base_url + "v1/dollarTax/user/document/download/fbar/",
     DownloadTaxOrganizer : base_url + "v1/dollarTax/user/document/download/tax-organizer/",
+
+    // PayGlocal Payment Gateway Configuration
+    GetPayment : base_url + "v1/dollarTax/user/userPayment/calculatePayment/",
 
 }
