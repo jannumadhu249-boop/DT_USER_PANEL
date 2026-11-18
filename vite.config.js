@@ -11,7 +11,20 @@ export default defineConfig({
         changeOrigin: true,
         secure: false,
         headers: {
-          Origin: 'http://localhost:3000',
+          Origin: 'http://72.61.116.4:3003',
+        },
+        rewrite: (path) => path.replace(/^\/payglocal-api/, ''),
+      },
+    },
+  },
+  preview: {
+    proxy: {
+      '/payglocal-api': {
+        target: 'https://api.uat.payglocal.in',
+        changeOrigin: true,
+        secure: false,
+        headers: {
+          Origin: 'http://72.61.116.4:3003',
         },
         rewrite: (path) => path.replace(/^\/payglocal-api/, ''),
       },

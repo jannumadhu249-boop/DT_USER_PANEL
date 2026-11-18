@@ -2,16 +2,10 @@
 
 const base_url = "http://72.61.116.4:8000/"
 
-// Backend origin without the trailing slash. Used wherever a path has to be
 // joined, so the resulting URL never contains a double slash.
 export const BASE_ORIGIN = base_url.replace(/\/+$/, "")
 
 // Public address of this client panel, used only to build shareable links.
-// Leave empty to derive it from the address the panel is opened on: an IP host
-// is then mapped to its sslip.io name so messaging apps keep the invite
-// clickable. Set it to a real domain (e.g. "https://client.dollartaxfiler.com")
-// once one is available: a configured value is used exactly as given and the
-// sslip.io mapping is never applied to it.
 export const APP_PUBLIC_URL = ""
 
 // Registration link handed out by "Refer a Friend". The code is encoded so it
@@ -66,7 +60,13 @@ export const buildReferralLink = (code = "") => buildReferralRegisterLink(code, 
 export const URLS = {
 
 
+    // Backend Payment Initiation Endpoint
+    InitiatePayment : base_url + "v1/dollarTax/user/userPayment/initiatePayment",
     PayGlocalKey : "cGxkb2xsYXJ0YXhmaWxlOmtJZC1zYnlYcnY2d2xuMlNob2kx",
+    PayGlocalAuth : "cGxkb2xsYXJ0YXg6NzZiMTBmZWYtNjczNS00ZGZjLThmNjMtMzY4YmRlYThmZGM0",
+    PayGlocalEndpoint : "/payglocal-api/gl/v1/payments/initiate/paycollect",
+    PayGlocalDirectEndpoint : "https://api.uat.payglocal.in/gl/v1/payments/initiate/paycollect",
+    PayGlocalCallbackUrl : "https://www.dollartaxfiler.com/office/Payments/payglocal_return",
     
 
     Base_Url : base_url,
@@ -167,5 +167,6 @@ export const URLS = {
 
     // PayGlocal Payment Gateway Configuration
     GetPayment : base_url + "v1/dollarTax/user/userPayment/calculatePayment/",
+    UpdatePayment : base_url + "v1/dollarTax/user/userPayment/verifyAndUpdatePayment/",
 
 }

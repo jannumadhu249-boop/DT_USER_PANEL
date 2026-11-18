@@ -461,7 +461,12 @@ export const getJourneyStepStates = ({
 
   return JOURNEY_STEPS.map((step) => {
     const state = states[step.key] || PROGRESS_STATE.PENDING;
-    return { ...step, state, statusLabel: PROGRESS_STATE_LABELS[state] };
+    // Documents step uses "Submitted" instead of "Completed" when done
+    let statusLabel = PROGRESS_STATE_LABELS[state];
+    if (step.key === "documents" && state === PROGRESS_STATE.COMPLETED) {
+      statusLabel = "Submitted";
+    }
+    return { ...step, state, statusLabel };
   });
 };
 

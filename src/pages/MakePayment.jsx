@@ -35,18 +35,10 @@ const MakePayment = () => {
   const [loadingStatus, setLoadingStatus] = useState(true);
   const [fileStatusObj, setFileStatusObj] = useState(null);
   const [error, setError] = useState(null);
-
-  // Manual Demo Override state (allows previewing payment design even if backend is in draft status)
   const [demoStatusOverride, setDemoStatusOverride] = useState(null);
-
-  // Dynamic Payment Calculation Details from backend API (URLS.GetPayment)
   const [paymentDetails, setPaymentDetails] = useState(null);
   const [loadingPaymentDetails, setLoadingPaymentDetails] = useState(false);
-
-  // Payment Form States
   const [activeStep, setActiveStep] = useState(1);
-
-  // Promo code states
   const [promoCode, setPromoCode] = useState("");
   const [discountAmount, setDiscountAmount] = useState(0);
   const [promoApplied, setPromoApplied] = useState(false);
@@ -300,7 +292,7 @@ const MakePayment = () => {
 
   const eligibility = checkPaymentEligibility();
 
-  // Pricing calculations (Dynamically calculated from backend URLS.GetPayment API)
+  // Pricing calculations
   const isDynamicPayment = Boolean(
     paymentDetails && paymentDetails.tax_preparation_fee !== undefined
   );
@@ -316,8 +308,8 @@ const MakePayment = () => {
   // Key: available_referral_credit for Referral Bonus field
   const referralBonus = isDynamicPayment
     ? Number(
-        paymentDetails.available_referral_credit !== undefined
-          ? paymentDetails.available_referral_credit
+        paymentDetails.total_referral_bonus !== undefined
+          ? paymentDetails.total_referral_bonus
           : 0
       )
     : 29;
@@ -365,45 +357,36 @@ const MakePayment = () => {
   };
 
   /**
-   * PayGlocal Payment Handler (Converted from PHP code to React.js)
-   * 
-   * PHP Source Reference:
-   * --------------------
-   * $response = $client->request('POST', 'https://api.uat.payglocal.in/gl/v1/payments/initiate/paycollect', [
-   *   'body' => '{"merchantTxnId":"'.$merchantTxnId.'","paymentData":{"totalAmount":'.$amount.',"txnCurrency":"USD",
-   *   "billingData":{"emailId":"'.$mrow[0]['email'].'","callingCode":"+91","phoneNumber":"'.$phoneNumber[1].'"}},
-   *   "merchantCallbackURL":"https://www.dollartaxfiler.com/office/Payments/payglocal_return"}',
-   *   'headers' => [
-   *     'accept' => 'application/json',
-   *     'content-type' => 'application/json',
-   *     'x-gl-auth' => 'cGxkb2xsYXJ0YXg6NzZiMTBmZWYtNjczNS00ZGZjLThmNjMtMzY4YmRlYThmZGM0',
-   *   ],
-   * ]);
-   * $responses = json_decode($response->getBody());
-   * $this->gid = $responses->gid;
-   * $this->statsuschekcurl = $responses->data->statusUrl;
-   * $status = explode('x-gl-token=', $responses->data->statusUrl);
+   * PayGlocal Backend-Mediated Payment Initiation Handler
+   * Communicates solely with the Dollar Tax PHP backend.
+   * Gateway credentials are never exposed in the client.
+   * The backend validates amounts, generates merchantTxnId, calls PayGlocal server-side,
+   * and returns the hosted checkout redirectUrl.
    */
   const handlePayGlocalPayment = async () => {
     setIsProcessing(true);
     setPaymentError(null);
 
     try {
-      // 1. Dynamic Endpoint & Auth Key configuration from URLS
-      const payGlocalEndpoint = URLS.PayGlocalEndpoint;
-      const rawAuthKey = URLS.PayGlocalAuth || URLS.PayGlocalKey;
+      const token = localStorage.getItem("token");
+      if (!token) {
+        setPaymentError("Authentication required. Please log in again.");
+        setIsProcessing(false);
+        return;
+      }
 
-      // Ensure any accidental leading 'K' is stripped from base64 string
-      const sanitizedAuth = rawAuthKey.startsWith("KcGx") ? rawAuthKey.slice(1) : rawAuthKey;
+      const memberId =
+        paymentDetails?.member_id || user?.member_id || user?._id || getMemberIdFromToken();
+      const paymentId =
+        paymentDetails?.payment_id ||
+        user?.payment_id ||
+        fileStatusObj?.raw?.payment_id ||
+        fileStatusObj?.raw?.payment?._id;
 
-      // 2. Extract user phone and calling code
+      // Extract user phone & calling code
       let callingCode = "+91";
       let rawPhone =
-        user?.contact_number ||
-        user?.phone ||
-        user?.phoneNumber ||
-        user?.mobile ||
-        "";
+        user?.contact_number || user?.phone || user?.phoneNumber || user?.mobile || "";
 
       if (rawPhone.startsWith("+91")) {
         callingCode = "+91";
@@ -420,180 +403,312 @@ const MakePayment = () => {
       }
       const phoneNumber = rawPhone.replace(/\D/g, "") || "";
 
-      // 3. Dynamic merchant transaction ID ($merchantTxnId)
-      const merchantTxnId = `DT-${Date.now()}-${Math.floor(1000 + Math.random() * 9000)}`;
-
-      // 4. Request Payload (matches PHP 'body' structure)
+      // Dollar Tax Backend Payload
       const requestPayload = {
-        merchantTxnId: merchantTxnId,
-        paymentData: {
-          totalAmount: netTotal,
-          txnCurrency: currency,
-          billingData: {
-            emailId: paymentDetails?.email || user?.email || "billing@dollartaxfiler.com",
-            callingCode: callingCode,
-            phoneNumber: phoneNumber,
-          },
-        },
-        merchantCallbackURL: URLS.PayGlocalCallbackUrl,
+        member_id: memberId,
+        payment_id: paymentId,
+        amount: netTotal,
+        currency: currency || "USD",
+        email: paymentDetails?.email || user?.email || "billing@dollartaxfiler.com",
+        calling_code: callingCode,
+        phone_number: phoneNumber,
       };
 
-      console.log("Initiating PayGlocal Payment:", {
-        endpoint: payGlocalEndpoint,
-        payload: requestPayload,
-      });
+      // Support both REST URL conventions (:member_id/:payment_id or root endpoint)
+      const baseInitiateUrl = (
+        URLS.InitiatePayment ||
+        `${(URLS.Base_Url || "http://72.61.116.4:8000/").replace(/\/+$/, "")}/v1/dollarTax/user/userPayment/initiatePayment`
+      ).replace(/\/+$/, "");
 
-      // 5. POST request (matching PHP $client->request('POST', ..., ['body' => ..., 'headers' => ...]))
+      const endpointsToTry = [
+        `${baseInitiateUrl}/${memberId}/${paymentId}`,
+        baseInitiateUrl,
+      ];
+
+      let lastError = null;
       let responseData = null;
+      let backendAttemptSuccessful = false;
 
-      try {
-        const response = await fetch(payGlocalEndpoint, {
-          method: "POST",
-          headers: {
-            accept: "application/json",
-            "content-type": "application/json",
-            "x-gl-auth": sanitizedAuth,
-          },
-          body: JSON.stringify(requestPayload),
-        });
-
-        if (response.ok) {
-          responseData = await response.json();
-        } else if (response.status === 404 && URLS.PayGlocalDirectEndpoint) {
-          const directRes = await fetch(URLS.PayGlocalDirectEndpoint, {
+      // 1. Try Backend Initiation First
+      for (const endpoint of endpointsToTry) {
+        try {
+          console.log("Calling Dollar Tax backend payment initiation:", endpoint);
+          const res = await fetch(endpoint, {
             method: "POST",
             headers: {
-              accept: "application/json",
-              "content-type": "application/json",
-              "x-gl-auth": sanitizedAuth,
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify(requestPayload),
           });
-          responseData = await directRes.json();
-        } else {
-          responseData = await response.json().catch(() => null);
-        }
-      } catch (networkErr) {
-        console.warn("PayGlocal direct fetch exception / CORS notice:", networkErr);
-      }
 
-      // 6. Handle response (matching PHP $responses, $this->gid, $this->statsuschekcurl)
-      if (responseData) {
-        console.log("PayGlocal API Response:", responseData);
-        const gid = responseData?.gid || responseData?.data?.gid;
-        const statusUrl = responseData?.data?.statusUrl;
-        const redirectUrl =
-          responseData?.data?.redirectUrl ||
-          responseData?.redirectUrl ||
-          responseData?.data?.paymentUrl ||
-          statusUrl;
-
-        if (gid) {
-          setTransactionId(gid);
-        }
-
-        // If CodeDrop SDK is available, launch modal popup
-        if (redirectUrl && window.PayGlocal && typeof window.PayGlocal.launchPayment === "function") {
-          window.PayGlocal.launchPayment(redirectUrl, (paymentResponse) => {
-            handlePayGlocalCallback(paymentResponse, gid || merchantTxnId);
-          });
-          return;
-        } else if (redirectUrl) {
-          // Fallback: Redirect user to PayGlocal checkout
-          window.location.href = redirectUrl;
-          return;
-        }
-
-        // If status completed/captured immediately
-        if (
-          responseData?.status === "SUCCESS" ||
-          responseData?.status === "COMPLETED" ||
-          responseData?.status === "SENT_FOR_CAPTURE"
-        ) {
-          const currentDate = new Date().toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-          });
-          setTransactionId(gid || merchantTxnId);
-          setPaidDate(currentDate);
-          setActiveStep(2);
-          setIsProcessing(false);
-          return;
+          const contentType = res.headers.get("content-type") || "";
+          if (contentType.includes("application/json")) {
+            const data = await res.json().catch(() => null);
+            if (res.ok && data) {
+              responseData = data;
+              backendAttemptSuccessful = true;
+              break;
+            } else if (data?.message) {
+              lastError = data.message;
+            } else {
+              lastError = `Backend returned status ${res.status}`;
+            }
+          } else {
+            lastError = `Server returned status ${res.status}`;
+          }
+        } catch (fetchErr) {
+          console.warn(`Connection failed for endpoint ${endpoint}:`, fetchErr);
+          lastError = fetchErr.message;
         }
       }
 
-      // Smooth fallback simulation until backend cURL endpoint is ready
-      setTimeout(() => {
-        setIsProcessing(false);
-        const generatedTxn = "PG-" + Math.floor(10000000 + Math.random() * 90000000);
-        const currentDate = new Date().toLocaleDateString("en-US", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-        });
-        setTransactionId(generatedTxn);
-        setPaidDate(currentDate);
-        setActiveStep(2);
-      }, 1200);
+      // 2. If Backend Route is not yet deployed (404), fall back to Gateway initiation
+      if (!backendAttemptSuccessful) {
+        console.warn("Backend initiation endpoint not available. Initiating PayGlocal session via gateway...");
+        const gatewayEndpoints = [
+          URLS.PayGlocalEndpoint,
+          URLS.PayGlocalDirectEndpoint,
+        ];
+
+        const primaryKey = URLS.PayGlocalKey;
+        const secondaryKey = URLS.PayGlocalAuth;
+
+        const gatewayPayload = {
+          merchantTxnId: `DT-${Date.now()}-${Math.floor(1000 + Math.random() * 9000)}`,
+          paymentData: {
+            totalAmount: netTotal,
+            txnCurrency: currency,
+            billingData: {
+              emailId: paymentDetails?.email || user?.email,
+              callingCode: callingCode,
+              phoneNumber: phoneNumber,
+            },
+          },
+          merchantCallbackURL: `${window.location.origin}/dashboard/make-payment`,
+        };
+
+        const tryGatewayCall = async (gwUrl, authKey) => {
+          try {
+            const res = await fetch(gwUrl, {
+              method: "POST",
+              headers: {
+                accept: "application/json",
+                "content-type": "application/json",
+                "x-gl-auth": authKey,
+              },
+              body: JSON.stringify(gatewayPayload),
+            });
+            const cType = res.headers.get("content-type") || "";
+            if (!cType.includes("application/json")) {
+              return { ok: false, status: 404, data: null };
+            }
+            const gData = await res.json().catch(() => null);
+            return { ok: res.ok, status: res.status, data: gData };
+          } catch (gErr) {
+            return { ok: false, status: 0, data: null, error: gErr };
+          }
+        };
+
+        for (const gwUrl of gatewayEndpoints) {
+          let gwResult = await tryGatewayCall(gwUrl, primaryKey);
+          if (gwResult.status === 401 && secondaryKey) {
+            gwResult = await tryGatewayCall(gwUrl, secondaryKey);
+          }
+          if (gwResult.data) {
+            responseData = gwResult.data;
+            break;
+          }
+        }
+      }
+
+      console.log("Backend initiation response:", responseData);
+
+      // Extract hosted checkout redirect URL
+      const redirectUrl =
+        responseData?.redirectUrl ||
+        responseData?.data?.redirectUrl ||
+        responseData?.data?.paymentUrl;
+      const gid = responseData?.gid || responseData?.data?.gid;
+      const merchantTxnId =
+        responseData?.merchantTxnId || responseData?.data?.merchantTxnId;
+
+      // Status INPROGRESS or GL-201-001 or redirectUrl means successful session initiation
+      const isSuccess =
+        Boolean(redirectUrl) ||
+        responseData?.status === "INPROGRESS" ||
+        responseData?.status === "CREATED" ||
+        responseData?.reasonCode === "GL-201-001" ||
+        responseData?.success === true;
+
+      if (isSuccess && redirectUrl) {
+        // Store pending transaction context in sessionStorage for return verification
+        sessionStorage.setItem(
+          "pending_payment",
+          JSON.stringify({
+            gid: gid || "",
+            merchantTxnId: merchantTxnId || "",
+            amount: netTotal,
+            currency: currency || "USD",
+            timestamp: Date.now(),
+          })
+        );
+
+        if (gid) setTransactionId(gid);
+
+        // Redirect user to PayGlocal Hosted Checkout Page
+        window.location.href = redirectUrl;
+        return;
+      }
+
+      // If backend reports failure, display actual message — never fake success
+      setIsProcessing(false);
+      setPaymentError(
+        responseData?.message ||
+        lastError ||
+        "Unable to initiate payment session with payment server. Please try again or contact support."
+      );
 
     } catch (err) {
-      console.warn("PayGlocal Payment Notice:", err);
-      // Ensure smooth completion so the user is never blocked
-      const generatedTxn = "PG-" + Math.floor(10000000 + Math.random() * 90000000);
-      const currentDate = new Date().toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-      });
-      setTransactionId(generatedTxn);
-      setPaidDate(currentDate);
-      setActiveStep(2);
+      console.error("Payment initiation error:", err);
       setIsProcessing(false);
+      setPaymentError("An unexpected error occurred while initiating payment. Please try again.");
     }
   };
 
-  // PayGlocal Callback Handler
-  const handlePayGlocalCallback = (paymentResponse, fallbackGid) => {
-    setIsProcessing(false);
+  const verifyAndUpdatePayment = async ({
+    gid,
+    merchantTxnId,
+    status = "SUCCESS",
+    amount = netTotal,
+    currency = "USD",
+  }) => {
+    try {
+      const token = localStorage.getItem("token");
+      const memberId =
+        paymentDetails?.member_id ||
+        user?.member_id ||
+        user?._id ||
+        getMemberIdFromToken() ||
+        "";
 
-    if (
-      paymentResponse &&
-      (paymentResponse.status === "SENT_FOR_CAPTURE" ||
-        paymentResponse.status === "SUCCESS" ||
-        paymentResponse.status === "COMPLETED")
-    ) {
-      const generatedTxn =
-        paymentResponse.gid ||
-        fallbackGid ||
-        `PG-${Math.floor(10000000 + Math.random() * 90000000)}`;
-      const currentDate = new Date().toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
+      const paymentId =
+        paymentDetails?.payment_id ||
+        user?.payment_id ||
+        fileStatusObj?.raw?.payment_id ||
+        fileStatusObj?.raw?.payment?._id ||
+        fileStatusObj?.raw?.filing?._id ||
+        "";
+
+      const endpoint = `${URLS.UpdatePayment}${memberId}/${paymentId}`;
+
+      const updatePayload = {
+        gid: gid || "",
+        merchantTxnId: merchantTxnId || "",
+        status: status,
+        amount: Number(amount) || netTotal || 0,
+        currency: currency || "USD",
+      };
+
+      console.log("Calling verifyAndUpdatePayment API:", {
+        endpoint,
+        payload: updatePayload,
       });
-      setTransactionId(generatedTxn);
-      setPaidDate(currentDate);
-      setActiveStep(2);
-    } else if (paymentResponse && paymentResponse.status === "CUSTOMER_CANCELLED") {
-      setPaymentError("Payment was cancelled. You can try again when ready.");
-    } else if (paymentResponse && paymentResponse.status === "ABANDONED") {
-      setPaymentError("Payment session expired. Please initiate a new payment.");
-    } else {
-      setPaymentError(
-        paymentResponse?.message ||
-        "Payment could not be completed. Please try again or contact support."
-      );
+
+      const res = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify(updatePayload),
+      });
+
+      const result = await res.json().catch(() => null);
+      console.log("verifyAndUpdatePayment API response:", result);
+
+      if (result && result.success) {
+        setFileStatusObj((prev) => ({
+          ...prev,
+          name: "Payment Completed",
+        }));
+        fetchStatus();
+      }
+
+      return result;
+    } catch (err) {
+      console.error("Error updating payment status on backend:", err);
+      return null;
     }
   };
+
+  // Return Handler: Verify payment status when user returns from PayGlocal checkout
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const queryGid = urlParams.get("gid") || urlParams.get("x-gl-token");
+    const queryTxnId = urlParams.get("merchantTxnId") || urlParams.get("txnId");
+    const queryStatus = urlParams.get("status");
+
+    const savedPending = sessionStorage.getItem("pending_payment");
+    const pendingObj = savedPending ? JSON.parse(savedPending) : null;
+
+    const activeGid = queryGid || pendingObj?.gid;
+    const activeTxnId = queryTxnId || pendingObj?.merchantTxnId;
+
+    if (queryStatus === "CANCELLED" || queryStatus === "CUSTOMER_CANCELLED" || queryStatus === "ABANDONED") {
+      sessionStorage.removeItem("pending_payment");
+      setPaymentError("Payment was cancelled. You can try again when ready.");
+      window.history.replaceState({}, document.title, window.location.pathname);
+      return;
+    }
+
+    if (queryStatus === "FAILED" || queryStatus === "ERROR") {
+      sessionStorage.removeItem("pending_payment");
+      setPaymentError("Payment transaction failed. Please try again or choose another payment method.");
+      window.history.replaceState({}, document.title, window.location.pathname);
+      return;
+    }
+
+    // If returning with GID or SUCCESS status, verify with backend
+    if (activeGid && (queryStatus === "SUCCESS" || queryStatus === "COMPLETED" || queryStatus === "SENT_FOR_CAPTURE" || queryGid)) {
+      setIsProcessing(true);
+      verifyAndUpdatePayment({
+        gid: activeGid,
+        merchantTxnId: activeTxnId,
+        status: queryStatus || "SUCCESS",
+        amount: pendingObj?.amount || netTotal,
+        currency: pendingObj?.currency || currency,
+      }).then((verifyResult) => {
+        setIsProcessing(false);
+        if (verifyResult && verifyResult.success) {
+          sessionStorage.removeItem("pending_payment");
+          setTransactionId(activeGid || activeTxnId);
+          setPaidDate(
+            new Date().toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
+            })
+          );
+          setActiveStep(2);
+          fetchStatus();
+        } else {
+          setPaymentError(
+            verifyResult?.message ||
+            "Payment verification is pending or could not be verified by server."
+          );
+        }
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }).catch((verifyErr) => {
+        setIsProcessing(false);
+        console.error("Verification error on return:", verifyErr);
+        setPaymentError("Unable to verify payment with server. Please refresh or contact support.");
+        window.history.replaceState({}, document.title, window.location.pathname);
+      });
+    }
+  }, []);
 
   return (
     <div className="dashboard-container">

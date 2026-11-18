@@ -92,9 +92,7 @@ const SHARE_OPTIONS = [
     key: "instagram",
     // label: "Instagram",
     icon: <InstagramIcon />,
-    // No share intent exists; the handler below copies the invite and opens the
-    // site, or hands the invite to the native share sheet on touch devices.
-    buildHref: () => "https://www.instagram.com/",
+    buildHref: (link) => `https://www.instagram.com/sharer/sharer.php?u=${encodeURIComponent(link)}`,
     external: true,
   },
   {
