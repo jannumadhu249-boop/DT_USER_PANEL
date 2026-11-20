@@ -325,8 +325,8 @@ export const FILE_STATUS_PIPELINE = [
   { code: "EF_REJ", label: "E - Filed & Rejected" },
   { code: "C_R", label: "City Return" },
   { code: "EFA_FC", label: "E-Filing Accepted & Filing Complete" },
-  { code: "PF_P", label: "Paper Filing Pending" },
-  { code: "PF_D", label: "Paper Filing Done" },
+  // { code: "PF_P", label: "Paper Filing Pending" },
+  // { code: "PF_D", label: "Paper Filing Done" },
   { code: "CANC", label: "Cancelled" },
 ];
 

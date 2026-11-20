@@ -29,10 +29,23 @@ const Register = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
-  // ── Referral Code (from the referral registration link) ──
-  // Derived from the URL so it stays available during the OTP step and is
-  // empty for normal registrations (no referral link).
-  const referralCode = (searchParams.get("referral_code") || "").trim();
+  // ── Referral Code ──
+  // If the user arrived via a referral registration link, we prefill and lock it.
+  // For normal registrations (no referral link), the field is still displayed
+  // but starts empty so the user can enter a code manually if they have one.
+  const queryReferralCode = (
+    searchParams.get("referral_code") ||
+    searchParams.get("ref") ||
+    ""
+  ).trim();
+  const [referralCode, setReferralCode] = useState(queryReferralCode);
+  const isReferredViaLink = Boolean(queryReferralCode);
+
+  useEffect(() => {
+    if (queryReferralCode) {
+      setReferralCode(queryReferralCode);
+    }
+  }, [queryReferralCode]);
 
   // ── Verification Step States ──
   const [step, setStep] = useState("register");
@@ -260,9 +273,10 @@ const Register = () => {
       body.append("alter_number", formData.alter_number.trim() || formData.contact_number.trim());
       body.append("time_zone", formData.time_zone);
       body.append("email", formData.email.trim());
-      // Only sent when the user arrived through a referral link
-      if (referralCode) {
-        body.append(REFERRAL_CODE_FIELD, referralCode);
+      // Sent when the user arrived through a referral link or entered a code manually
+      const finalReferralCode = (referralCode || "").trim();
+      if (finalReferralCode) {
+        body.append(REFERRAL_CODE_FIELD, finalReferralCode);
       }
       body.append("password", formData.password);
       body.append("current_stage", "New");
@@ -619,35 +633,46 @@ const Register = () => {
                     )}
                   </div>
 
-                  {/* Referral Code – only visible for referral registrations */}
-                  {referralCode && (
-                    <div className="mb-2">
-                      <label className="form-label mb-1" style={{ fontSize: "0.75rem" }}>
-                        Referral Code
-                      </label>
-                      <div className="auth-field-wrap">
-                        <span className="auth-icon"><Gift size={15} /></span>
-                        <input
-                          type="text"
-                          className="form-control"
-                          value={referralCode}
-                          readOnly
-                          aria-label="Referral code"
-                          style={{
-                            padding: "8px 12px 8px 38px",
-                            fontSize: "0.88rem",
-                            backgroundColor: "#f1f5f9",
-                            color: "#1e1b4b",
-                            fontWeight: 600,
-                            cursor: "default",
-                          }}
-                        />
-                      </div>
+                  {/* Referral Code – always displayed: prefilled & locked if registered through a link, editable for normal users */}
+                  <div className="mb-2">
+                    <label className="form-label mb-1" style={{ fontSize: "0.75rem" }}>
+                      Referral Code {!isReferredViaLink && <span className="text-muted fw-normal">(Optional)</span>}
+                    </label>
+                    <div className="auth-field-wrap">
+                      <span className="auth-icon"><Gift size={15} /></span>
+                      <input
+                        type="text"
+                        name="referral_code"
+                        className="form-control"
+                        value={referralCode}
+                        onChange={(e) => setReferralCode(e.target.value)}
+                        readOnly={isReferredViaLink}
+                        aria-label="Referral code"
+                        placeholder="Enter Referral Code"
+                        style={{
+                          padding: "8px 12px 8px 38px",
+                          fontSize: "0.88rem",
+                          ...(isReferredViaLink
+                            ? {
+                                backgroundColor: "#f1f5f9",
+                                color: "#1e1b4b",
+                                fontWeight: 600,
+                                cursor: "default",
+                              }
+                            : {}),
+                        }}
+                      />
+                    </div>
+                    {isReferredViaLink ? (
                       <small className="text-muted d-block mt-0.5" style={{ fontSize: "0.72rem" }}>
                         You were referred by a friend – this code is applied automatically.
                       </small>
-                    </div>
-                  )}
+                    ) : (
+                      <small className="text-muted d-block mt-0.5" style={{ fontSize: "0.72rem" }}>
+                        Have a referral code? Enter it here.
+                      </small>
+                    )}
+                  </div>
 
                   {/* Terms */}
                   <div className="mb-2.5 mt-1">

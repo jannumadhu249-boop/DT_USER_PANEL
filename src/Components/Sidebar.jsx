@@ -316,11 +316,13 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                 (location.pathname === "/dashboard" || location.pathname === "/client-dashboard")) ||
               (item.hasSubmenu ? isBasicInfoActive : location.pathname === item.path);
 
+            const isPaymentItem = item.label === "Make Payment";
+
             return (
               <div key={index}>
                 <a
                   href="#"
-                  className={`nav-item ${isItemActive ? "active" : ""}`}
+                  className={`nav-item ${isItemActive ? "active" : ""} ${isPaymentItem ? "make-payment-blink" : ""}`}
                   onClick={(e) => {
                     e.preventDefault();
                     handleMenuClick(item);

@@ -237,6 +237,37 @@
   text-decoration: none !important;
 }
 
+/* ── Make Payment: attention-grabbing blink + vivid hover ── */
+@keyframes makePaymentPulse {
+  0%,
+  100% {
+    background: rgba(251, 191, 36, 0.18);
+    box-shadow: 0 0 0 0 rgba(251, 191, 36, 0);
+  }
+  50% {
+    background: rgba(251, 191, 36, 0.32);
+    box-shadow: 0 0 0 4px rgba(251, 191, 36, 0.18);
+  }
+}
+
+.nav-item.make-payment-blink {
+  animation: makePaymentPulse 0.3s ease-in-out infinite;
+  color: #fcd34d !important;
+  font-weight: 700;
+  border-left: 3px solid #fbbf24 !important;
+  border-radius: 8px;
+}
+
+.nav-item.make-payment-blink:hover {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 16px rgba(245, 158, 11, 0.45) !important;
+  animation: none;
+  border-left: 3px solid #b45309 !important;
+  transform: translateX(2px);
+  transition: all 0.2s ease;
+}
+
 .nav-item.active {
   background: linear-gradient(135deg, #213ee4 0%, #272ccf 100%) !important;
   color: #ffffff !important;

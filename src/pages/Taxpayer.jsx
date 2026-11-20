@@ -49,7 +49,7 @@ const Taxpayer = () => {
     zipcode: "",
   });
 
-  const isValidPhone = (phone) => /^\d{10}$/.test(phone.replace(/\D/g, ""));
+  const isValidPhone = (phone) => /^\d{10}$/.test(phone.replace(/\D/g, "").slice(-10));
   const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
   const alertTimeoutRef = useRef(null);
@@ -108,8 +108,8 @@ const Taxpayer = () => {
           visa_type: item.visa_type || "NOT AVAILABLE",
           filing_status: item.filing_status || "Single",
           timezone: item.timezone || "MST",
-          contact_number: item.contact_number || "",
-          alternate_number: item.alternate_number || "",
+          contact_number: normalisePhone(item.contact_number) || "",
+          alternate_number: normalisePhone(item.alternate_number) || "",
           email: item.email || "",
           alternate_email: item.alternate_email || "",
           date_of_marriage: item.date_of_marriage || "",
@@ -195,15 +195,29 @@ const Taxpayer = () => {
   const handlePhoneChange = (e, fieldName) => {
     const raw = e.target.value.replace(/\D/g, "");
     const limited = raw.slice(0, 10);
-    let formatted = limited;
-    if (limited.length > 6) {
-      formatted = limited.slice(0, 3) + " " + limited.slice(3, 6) + " " + limited.slice(6);
-    } else if (limited.length > 3) {
-      formatted = limited.slice(0, 3) + " " + limited.slice(3);
+    let formatted = "";
+    if (limited.length === 0) {
+      formatted = "";
+    } else if (limited.length <= 3) {
+      formatted = `+1(${limited}`;
+    } else if (limited.length <= 6) {
+      formatted = `+1(${limited.slice(0, 3)})${limited.slice(3)}`;
+    } else {
+      formatted = `+1(${limited.slice(0, 3)})${limited.slice(3, 6)}-${limited.slice(6)}`;
     }
     setFormData((prev) => ({ ...prev, [fieldName]: formatted }));
     if (error) setError("");
     if (successMsg) setSuccessMsg("");
+  };
+
+
+  const normalisePhone = (raw) => {
+    if (!raw) return "";
+    const digits = raw.replace(/\D/g, "").slice(-10);
+    if (digits.length === 0) return "";
+    if (digits.length <= 3) return `+1(${digits}`;
+    if (digits.length <= 6) return `+1(${digits.slice(0, 3)})${digits.slice(3)}`;
+    return `+1(${digits.slice(0, 3)})${digits.slice(3, 6)}-${digits.slice(6)}`;
   };
 
   const formatDate = (date) => {
@@ -828,7 +842,7 @@ const Taxpayer = () => {
                       <input
                         type="text"
                         className="form-control"
-                        placeholder="Enter Phone Number"
+                        placeholder="+1(XXX)XXX-XXXX"
                         name="contact_number"
                         value={formData.contact_number}
                         onChange={(e) => handlePhoneChange(e, "contact_number")}
@@ -842,7 +856,7 @@ const Taxpayer = () => {
                       <input
                         type="text"
                         className="form-control"
-                        placeholder="Enter Alternate Number"
+                        placeholder="+1(XXX)XXX-XXXX"
                         name="alternate_number"
                         value={formData.alternate_number}
                         onChange={(e) => handlePhoneChange(e, "alternate_number")}
